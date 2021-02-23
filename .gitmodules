@@ -1,0 +1,3 @@
+[submodule "libs/libarp"]
+	path = libs/libarp
+	url = ssh://git@github.com/caseif/libarp.git
