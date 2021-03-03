@@ -9,7 +9,7 @@ arptool <action> [args] <target path>
 ```
 
 | Shorthand | Longhand | Description |
-| :-- | :-- |
+| :-- | :-- | :-- |
 | `-c <type>` | `--compression=<type>` | Compression type. Currently, the only supported values are `deflate` and `none`. |
 | N/A | `--deflate` | Shorthand for `-c deflate`. |
 | `-f <name>` | `--name=<name>` | The name to use when generating package files. This will default to the name of the target directory if not supplied. |
