@@ -26,6 +26,8 @@
     return _cpp_err_msg_buf; \
 }
 
+#define CMP_LONG_FLAG(arg, len, flag) (strncmp(arg, flag, len) == 0 && strlen(flag) == len)
+
 char *parse_args(int argc, char **argv, arp_cmd_args_t *out_args) {
     size_t pos = 0;
     bool stopped_args = false;
@@ -43,9 +45,26 @@ char *parse_args(int argc, char **argv, arp_cmd_args_t *out_args) {
             if (strncmp(arg, "--", 2) == 0) {
                 char *flag = arg + 2;
 
-                if (strcmp(flag, NFLAG_DEFLATE) == 0) {
+                char *eq_pos = strchr(arg, '=');
+
+                size_t flag_len;
+                if (eq_pos != NULL) {
+                    flag_len = eq_pos - flag;
+                } else {
+                    flag_len = strlen(flag);
+                }
+
+                if (CMP_LONG_FLAG(flag, flag_len, NFLAG_DEFLATE)) {
+                    if (eq_pos != NULL) {
+                        PARSE_FAIL("Argument '%s' must not have a parameter", arg);
+                    }
+
                     out_args->compression = CMPR_STR_DEFLATE;
                     continue;
+                }
+
+                if (eq_pos == NULL) {
+                    PARSE_FAIL("Argument '%s' must have a parameter", arg);
                 }
 
                 if (i == argc - 1) {
@@ -53,20 +72,19 @@ char *parse_args(int argc, char **argv, arp_cmd_args_t *out_args) {
                     PARSE_FAIL("Expected parameter for flag '%s'", arg);
                 }
 
-                char *param = argv[i + 1];
-                i += 1;
+                char *param = eq_pos + 1;
 
-                if (strcmp(flag, FLAG_COMPRESSION_LONG) == 0) {
+                if (CMP_LONG_FLAG(flag, flag_len, FLAG_COMPRESSION_LONG)) {
                     out_args->compression = param;
-                } else if (strcmp(flag, FLAG_NAME_LONG) == 0) {
+                } else if (CMP_LONG_FLAG(flag, flag_len, FLAG_NAME_LONG)) {
                     out_args->package_name = param;
-                } else if (strcmp(flag, FLAG_MAPPINGS_LONG) == 0) {
+                } else if (CMP_LONG_FLAG(flag, flag_len, FLAG_MAPPINGS_LONG)) {
                     out_args->mappings_path = param;
-                } else if (strcmp(flag, FLAG_NAMESPACE_LONG) == 0) {
+                } else if (CMP_LONG_FLAG(flag, flag_len, FLAG_NAMESPACE_LONG)) {
                     out_args->package_namespace = param;
-                } else if (strcmp(flag, FLAG_OUTPUT_LONG) == 0) {
+                } else if (CMP_LONG_FLAG(flag, flag_len, FLAG_OUTPUT_LONG)) {
                     out_args->output_path = param;
-                } else if (strcmp(flag, FLAG_PART_SIZE_LONG) == 0) {
+                } else if (CMP_LONG_FLAG(flag, flag_len, FLAG_PART_SIZE_LONG)) {
                     size_t param_l = strtoull(param, NULL, 10);
 
                     if (errno != 0) {
