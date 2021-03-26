@@ -5,8 +5,32 @@
 ### Usage
 
 ```
-arptool <action> [args] <target path>
+arptool <verb> [args] <target path>
 ```
+
+Valid verbs are `pack`, `unpack`, `list`, and `help`.
+
+The semantics of the target path argument vary between verbs, but the given path will always be used as input to the
+program of some kind.
+
+#### Verbs
+
+| Name | Description |
+| :-- | :-- |
+| `pack` | Creates a new package, using the target path as input. |
+| `unpack` | Unpacks the package located at the target path. |
+| `list` | Lists the resources contained by the package located at the target path. |
+
+#### Global params
+
+| Shorthand | Longhand | Description |
+| :-- | :-- | :-- |
+| `-?`, `-h` | `--help` | Prints help information for the program or the provided verb if applicable. |
+| `-o <path>` | `--output=<path>` | The path to direct output files to. This must be a directory if it already exists, and defaults to the current working directory. |
+
+#### `pack` params
+
+The following parameters are valid only for the `pack` verb.
 
 | Shorthand | Longhand | Description |
 | :-- | :-- | :-- |
@@ -15,8 +39,15 @@ arptool <action> [args] <target path>
 | `-f <name>` | `--name=<name>` | The name to use when generating package files. This will default to the name of the target directory if not supplied. |
 | `-m <path>` | `--mappings=<path>` | Path to a CSV file providing supplemental media type mappings (see below for details). |
 | `-n <name>` | `--namespace=<name>` | The namespace of the generated package. This will default to the package name if not supplied. |
-| `-o <path>` | `--output=<path>` | The path to direct output files to. This must be supplied and must be a directory if it already exists. |
 | `-p <size>` | `--part-size=<size>` | The maximum size in bytes for part files. The value must be at least 4096 bytes. |
+
+#### `unpack` params
+
+The following parameters are valid only for the `unpack` verb.
+
+| Shorthand | Longhand | Description |
+| :-- | :-- | :-- |
+| `-r <path>` | `--resource=<path>` | Extracts a specific resource from the target package. |
 
 ### Building
 

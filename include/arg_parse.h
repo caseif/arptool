@@ -12,6 +12,7 @@
 #include <stddef.h>
 
 typedef struct ArpCmdArgs {
+    char *verb;
     char *target_path;
     char *compression;
     char *mappings_path;

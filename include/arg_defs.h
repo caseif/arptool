@@ -24,6 +24,12 @@
 
 #define NFLAG_DEFLATE "deflate"
 
-#define POS_TARGET_PATH 0
+#define POS_VERB 0
+#define POS_TARGET_PATH 1
 
-#define REQUIRED_POS_ARGS 1
+#define REQUIRED_POS_ARGS 2
+
+#define VERB_PACK "pack"
+#define VERB_UNPACK "unpack"
+#define VERB_LIST "list"
+#define VERB_HELP "help"

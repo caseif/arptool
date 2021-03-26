@@ -7,7 +7,9 @@
  * license text may be accessed at https://opensource.org/licenses/MIT.
  */
 
-#include "cmdargs.h"
+#include "arg_defs.h"
+#include "arg_parse.h"
+#include "cmd_impls.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -27,11 +29,39 @@ int main(int argc, char **argv) {
         exit(-1);
     }
 
-    printf("compression: %s\n", args.compression);
-    printf("name: %s\n", args.package_name);
-    printf("namespace: %s\n", args.package_namespace);
-    printf("mappings path: %s\n", args.mappings_path);
-    printf("output path: %s\n", args.output_path);
-    printf("part size: %lu\n", args.part_size);
-    printf("target path: %s\n", args.target_path);
+    if (strcmp(args.verb, VERB_PACK) != 0) {
+        if (args.compression != NULL) {
+            printf("Compression param does not make sense with specified verb\n");
+            exit(-1);
+        }
+        if (args.mappings_path != NULL) {
+            printf("Mappings path param does not make sense with specified verb\n");
+            exit(-1);
+        }
+        if (args.package_name != NULL) {
+            printf("Package name param does not make sense with specified verb\n");
+            exit(-1);
+        }
+        if (args.package_namespace != NULL) {
+            printf("Namespace param does not make sense with specified verb\n");
+            exit(-1);
+        }
+        if (args.part_size != 0) {
+            printf("Part size param does not make sense with specified verb\n");
+            exit(-1);
+        }
+    }
+
+    if (strcmp(args.verb, VERB_HELP) == 0) {
+        printf("Help coming soon(TM).\n");
+        return 0;
+    } else if (strcmp(args.verb, VERB_PACK) == 0) {
+        exec_cmd_pack(&args);
+    } else if (strcmp(args.verb, VERB_UNPACK) == 0) {
+        exec_cmd_unpack(&args);
+    } else if (strcmp(args.verb, VERB_LIST) == 0) {
+        exec_cmd_list(&args);
+    } else {
+        printf("Unrecognized verb: %s\n", args.verb);
+    }
 }

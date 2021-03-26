@@ -7,16 +7,16 @@
  * license text may be accessed at https://opensource.org/licenses/MIT.
  */
 
+#include "arg_defs.h"
+#include "arg_parse.h"
+#include "compression_defines.h"
+
 #include <errno.h>
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-
-#include "arg_defines.h"
-#include "cmdargs.h"
-#include "compression_defines.h"
 
 #define ERR_MSG_BUF_LEN 256
 
@@ -135,6 +135,10 @@ char *parse_args(int argc, char **argv, arp_cmd_args_t *out_args) {
         }
 
         switch (pos) {
+            case POS_VERB: {
+                out_args->verb = arg;
+                break;
+            }
             case POS_TARGET_PATH: {
                 out_args->target_path = arg;
                 break;
