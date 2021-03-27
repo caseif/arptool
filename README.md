@@ -23,31 +23,31 @@ program of some kind.
 
 #### Global params
 
-| Shorthand | Longhand | Description |
-| :-- | :-- | :-- |
-| `-?`, `-h` | `--help` | Prints help information for the program or the provided verb if applicable. |
-| `-o <path>` | `--output=<path>` | The path to direct output files to. This must be a directory if it already exists, and defaults to the current working directory. |
+| Shorthand | Longhand | Description | Default |
+| :-- | :-- | :-- | :-- |
+| `-?`, `-h` | `--help` | Prints help information for the program or the provided verb if applicable. | N/A |
+| `-o <path>` | `--output=<path>` | The path to direct output files to. This must be a directory if it already exists. | The current working directory. |
 
 #### `pack` params
 
 The following parameters are valid only for the `pack` verb.
 
-| Shorthand | Longhand | Description |
-| :-- | :-- | :-- |
-| `-c <type>` | `--compression=<type>` | Compression type. Currently, the only supported values are `deflate` and `none`. |
-| N/A | `--deflate` | Shorthand for `-c deflate`. |
-| `-f <name>` | `--name=<name>` | The name to use when generating package files. This will default to the name of the target directory if not supplied. |
-| `-m <path>` | `--mappings=<path>` | Path to a CSV file providing supplemental media type mappings (see below for details). |
-| `-n <name>` | `--namespace=<name>` | The namespace of the generated package. This will default to the package name if not supplied. |
-| `-p <size>` | `--part-size=<size>` | The maximum size in bytes for part files. The value must be at least 4096 bytes. |
+| Shorthand | Longhand | Description | Default |
+| :-- | :-- | :-- | :-- |
+| `-c <type>` | `--compression=<type>` | Compression type. Currently, the only supported values are `deflate` and `none`. | `none` |
+| N/A | `--deflate` | Shorthand for `-c deflate`. | N/A |
+| `-f <name>` | `--name=<name>` | The name to use when generating package files. | The base name of the target directory. |
+| `-m <path>` | `--mappings=<path>` | Path to a CSV file providing supplemental media type mappings (see below for details). | (empty) |
+| `-n <name>` | `--namespace=<name>` | The namespace of the generated package. The package name as specified by the `-f` flag.
+| `-p <size>` | `--part-size=<size>` | The maximum size in bytes for part files. The value (if provided) must be at least 4096 bytes. | 0 (unlimited) |
 
 #### `unpack` params
 
 The following parameters are valid only for the `unpack` verb.
 
-| Shorthand | Longhand | Description |
-| :-- | :-- | :-- |
-| `-r <path>` | `--resource=<path>` | Extracts a specific resource from the target package. |
+| Shorthand | Longhand | Description | Default |
+| :-- | :-- | :-- | :-- |
+| `-r <path>` | `--resource=<path>` | Extracts a specific resource from the target package. | (empty) |
 
 ### Building
 
