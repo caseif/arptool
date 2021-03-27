@@ -38,7 +38,7 @@ The following parameters are valid only for the `pack` verb.
 | N/A | `--deflate` | Shorthand for `-c deflate`. | N/A |
 | `-f <name>` | `--name=<name>` | The name to use when generating package files. | The base name of the target directory. |
 | `-m <path>` | `--mappings=<path>` | Path to a CSV file providing supplemental media type mappings (see below for details). | (empty) |
-| `-n <name>` | `--namespace=<name>` | The namespace of the generated package. The package name as specified by the `-f` flag.
+| `-n <name>` | `--namespace=<name>` | The namespace of the generated package. | The package name as specified by the `-f` flag. |
 | `-p <size>` | `--part-size=<size>` | The maximum size in bytes for part files. The value (if provided) must be at least 4096 bytes. | 0 (unlimited) |
 
 #### `unpack` params
