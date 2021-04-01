@@ -11,6 +11,8 @@
 #include "arg_parse.h"
 #include "cmd_impls.h"
 
+#include "libarp/defines.h"
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -50,6 +52,11 @@ int main(int argc, char **argv) {
             printf("Part size param does not make sense with specified verb\n");
             exit(-1);
         }
+    }
+
+    if (args.package_namespace != NULL && strlen(args.package_namespace) > ARP_NAMESPACE_MAX) {
+        printf("Namespace is too long (max %d chars)\n", ARP_NAMESPACE_MAX);
+        exit(-1);
     }
 
     if (strcmp(args.verb, VERB_HELP) == 0) {

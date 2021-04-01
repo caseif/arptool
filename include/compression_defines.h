@@ -9,5 +9,5 @@
 
 #pragma once
 
+#define CMPR_STR_NONE "none"
 #define CMPR_STR_DEFLATE "deflate"
-#define CMPR_MAGIC_DEFLATE "df"
