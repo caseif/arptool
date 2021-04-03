@@ -139,8 +139,8 @@ char *parse_args(int argc, char **argv, arp_cmd_args_t *out_args) {
                 out_args->verb = arg;
                 break;
             }
-            case POS_TARGET_PATH: {
-                out_args->target_path = arg;
+            case POS_SRC_PATH: {
+                out_args->src_path = arg;
                 break;
             }
             default: {
