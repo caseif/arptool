@@ -25,7 +25,7 @@
 #define NFLAG_DEFLATE "deflate"
 
 #define POS_VERB 0
-#define POS_TARGET_PATH 1
+#define POS_SRC_PATH 1
 
 #define REQUIRED_POS_ARGS 2
 

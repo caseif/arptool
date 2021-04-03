@@ -5,21 +5,21 @@
 ### Usage
 
 ```
-arptool <verb> [args] <target path>
+arptool <verb> [args] <source path>
 ```
 
 Valid verbs are `pack`, `unpack`, `list`, and `help`.
 
-The semantics of the target path argument vary between verbs, but the given path will always be used as input to the
+The semantics of the source path argument vary between verbs, but the given path will always be used as input to the
 program of some kind.
 
 #### Verbs
 
 | Name | Description |
 | :-- | :-- |
-| `pack` | Creates a new package, using the target path as input. |
-| `unpack` | Unpacks the package located at the target path. |
-| `list` | Lists the resources contained by the package located at the target path. |
+| `pack` | Creates a new package, using the source path as input. |
+| `unpack` | Unpacks the package located at the source path. |
+| `list` | Lists the resources contained by the package located at the source path. |
 
 #### Global params
 
@@ -36,7 +36,7 @@ The following parameters are valid only for the `pack` verb.
 | :-- | :-- | :-- | :-- |
 | `-c <type>` | `--compression=<type>` | Compression type. Currently, the only supported values are `deflate` and `none`. | `none` |
 | N/A | `--deflate` | Shorthand for `-c deflate`. | N/A |
-| `-f <name>` | `--name=<name>` | The name to use when generating package files. | The base name of the target directory. |
+| `-f <name>` | `--name=<name>` | The name to use when generating package files. | The base name of the source directory. |
 | `-m <path>` | `--mappings=<path>` | Path to a CSV file providing supplemental media type mappings (see below for details). | (empty) |
 | `-n <name>` | `--namespace=<name>` | The namespace of the generated package. | The package name as specified by the `-f` flag. |
 | `-p <size>` | `--part-size=<size>` | The maximum size in bytes for part files. The value (if provided) must be at least 4096 bytes. | 0 (unlimited) |
@@ -47,7 +47,7 @@ The following parameters are valid only for the `unpack` verb.
 
 | Shorthand | Longhand | Description | Default |
 | :-- | :-- | :-- | :-- |
-| `-r <path>` | `--resource=<path>` | Extracts a specific resource from the target package. | (empty) |
+| `-r <path>` | `--resource=<path>` | Extracts a specific resource from the source package. | (empty) |
 
 ### Building
 

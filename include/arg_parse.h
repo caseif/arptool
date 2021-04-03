@@ -13,7 +13,7 @@
 
 typedef struct ArpCmdArgs {
     char *verb;
-    char *target_path;
+    char *src_path;
     char *compression;
     char *mappings_path;
     char *package_name;

@@ -21,7 +21,7 @@
 #endif
 
 void exec_cmd_pack(arp_cmd_args_t *args) {
-    char *target_path = args->target_path;
+    char *src_path = args->src_path;
     char *output_path = NULL;
     char *package_name = args->package_name;
     char package_namespace[ARP_NAMESPACE_MAX + 1];
@@ -35,11 +35,11 @@ void exec_cmd_pack(arp_cmd_args_t *args) {
     }
 
     if (package_name == NULL) {
-        char *delim = strrchr(target_path, PATH_DELIMITER);
+        char *delim = strrchr(src_path, PATH_DELIMITER);
         if (delim != NULL) {
             package_name = delim + 1;
         } else {
-            package_name = target_path;
+            package_name = src_path;
         }
     }
 
@@ -70,7 +70,7 @@ void exec_cmd_pack(arp_cmd_args_t *args) {
             mappings_path);
 
     int rc = 0xDEADBEEF;
-    if ((rc = create_arp_from_fs(target_path, output_path, opts, NULL)) == 0) {
+    if ((rc = create_arp_from_fs(src_path, output_path, opts, NULL)) == 0) {
         printf("Successfully wrote archive to %s\n", output_path);
     } else {
         printf("Packing failed\n");
