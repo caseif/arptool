@@ -1,4 +1,5 @@
 #include "arg_parse.h"
+#include "arg_util.h"
 #include "cmd_impls.h"
 #include "compression_defines.h"
 #include "file_defines.h"
@@ -20,36 +21,17 @@
 #endif
 
 void exec_cmd_pack(arp_cmd_args_t *args) {
-    char *target_path = NULL;
-    char *output_path = args->output_path;
+    char *target_path = args->target_path;
+    char *output_path = NULL;
     char *package_name = args->package_name;
     char package_namespace[ARP_NAMESPACE_MAX + 1];
     char *mappings_path = args->mappings_path;
     char *compression_magic = NULL;
     size_t part_size = args->part_size;
 
-    bool malloced_target_path;
-    #ifdef _WIN32
-    char target_path_buf[MAX_PATH];
-    if (!PathCanonicalizeA(target_path_buf, args->target_path)) {
-        printf("Failed to canonicalize target path\n");
+    bool malloced_output_path = false;
+    if ((output_path = get_output_path(args, &malloced_output_path)) == NULL) {
         return;
-    }
-    target_path = target_path_buf;
-    #else
-    if ((target_path = realpath(args->target_path, NULL)) == NULL) {
-        printf("Failed to canonicalize target path\n");
-        return;
-    }
-    malloced_target_path = true;
-    #endif
-
-    size_t target_path_len_s = strlen(target_path);
-
-    if (target_path[target_path_len_s - 1] == PATH_DELIMITER) {
-        // avoid any malloc or PATH_MAX nonsense by directly mutating the arg
-        // this is acceptable because we expect that nothing beyond this function will read the args
-        target_path[target_path_len_s - 1] = '\0';
     }
 
     if (package_name == NULL) {
@@ -75,25 +57,13 @@ void exec_cmd_pack(arp_cmd_args_t *args) {
         } else if (strcmp(args->compression, CMPR_STR_NONE) == 0) {
             // no-op
         } else {
-            if (malloced_target_path) {
-                free(target_path);
+            if (malloced_output_path) {
+                free(output_path);
             }
 
             printf("Unrecognized compression type\n");
             return;
         }
-    }
-
-    bool malloced_output_path = false;
-    if (args->output_path == NULL) {
-        malloced_output_path = true;
-        #ifdef _WIN32
-        size_t required_size = GetCurrentDirectory(0, NULL);
-        output_path = malloc(required_size);
-        GetCurrentDirectory(required_size, output_path);
-        #else
-        output_path = getcwd(NULL, 0);
-        #endif
     }
 
     ArpPackingOptions opts = create_v1_packing_options(package_name, package_namespace, part_size, compression_magic,
@@ -109,9 +79,5 @@ void exec_cmd_pack(arp_cmd_args_t *args) {
 
     if (malloced_output_path) {
         free(output_path);
-    }
-
-    if (malloced_target_path) {
-        free(target_path);
     }
 }

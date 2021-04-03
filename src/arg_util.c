@@ -1,0 +1,34 @@
+#include "arg_parse.h"
+#include "arg_util.h"
+
+#include <stdio.h>
+#include <stdlib.h>
+
+#ifdef _WIN32
+#include <winbase.h>
+#else
+#include <unistd.h>
+#endif
+
+char *get_output_path(const arp_cmd_args_t *args, bool *malloced) {
+    if (args->output_path != NULL) {
+        return args->output_path;
+    } else {
+        char *res = NULL;
+        #ifdef _WIN32
+        size_t required_size = GetCurrentDirectory(0, NULL);
+        if ((res = malloc(required_size)) {
+            errno = ENOMEM;
+            printf("Out of memory\n");
+            return NULL;
+        }
+        *malloced = true;
+        GetCurrentDirectory(required_size, res);
+        return res
+        #else
+        res = getcwd(NULL, 0);
+        *malloced = true;
+        return res;
+        #endif
+    }
+}
