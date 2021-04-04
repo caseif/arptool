@@ -44,10 +44,10 @@ void exec_cmd_pack(arp_cmd_args_t *args) {
     }
 
     if (args->package_namespace != NULL) {
-        strncpy(package_namespace, args->package_namespace, sizeof(package_namespace) - 1);
+        strncpy(package_namespace, args->package_namespace, sizeof(package_namespace));
         package_namespace[strlen(args->package_namespace)] = '\0';
     } else {
-        strncpy(package_namespace, package_name, sizeof(package_namespace - 1));
+        strncpy(package_namespace, package_name, sizeof(package_namespace));
         package_namespace[strlen(package_name)] = '\0';
     }
 
