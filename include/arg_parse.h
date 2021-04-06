@@ -20,6 +20,7 @@ typedef struct ArpCmdArgs {
     char *package_namespace;
     char *output_path;
     size_t part_size;
+    char *resource_path;
 } arp_cmd_args_t;
 
 char *parse_args(int argc, char **argv, arp_cmd_args_t *out_args);

@@ -21,6 +21,8 @@
 #define FLAG_OUTPUT_LONG "output"
 #define FLAG_PART_SIZE_SHORT "p"
 #define FLAG_PART_SIZE_LONG "part-size"
+#define FLAG_RESOURCE_PATH_SHORT "r"
+#define FLAG_RESOURCE_PATH_LONG "resource"
 
 #define NFLAG_DEFLATE "deflate"
 

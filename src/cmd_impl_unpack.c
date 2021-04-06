@@ -10,12 +10,14 @@
 #include "arg_parse.h"
 #include "arg_util.h"
 #include "cmd_impls.h"
+#include "file_defines.h"
 
 #include "libarp/unpack.h"
 
 #include <errno.h>
 #include <stdbool.h>
 #include <stdio.h>
+#include <string.h>
 
 int exec_cmd_unpack(arp_cmd_args_t *args) {
     char *src_path = args->src_path;
@@ -39,14 +41,73 @@ int exec_cmd_unpack(arp_cmd_args_t *args) {
 
     printf("Successfully loaded package\n");
 
-    if ((rc = unpack_arp_to_fs(package, output_path)) == 0) {
-        printf("Successfully unpacked package to disk!\n");
-    } else {
-        if (malloced_output_path) {
-            free(output_path);
+    if (args->resource_path != NULL) {
+        arp_resource_t *res;
+        if ((res = load_resource(package, args->resource_path)) == NULL) {
+            if (malloced_output_path) {
+                free(output_path);
+            }
+
+            printf("Failed to load resource (libarp says: %s)\n", libarp_get_error());
+            return rc;
         }
 
-        printf("Failed to unpack package to disk (rc: %d) (libarp says: %s)\n", rc, libarp_get_error());
+        size_t res_op_len_s = strlen(output_path) + 1 + strlen(res->info.base_name) + 1 + strlen(res->info.extension);
+        size_t res_op_len_b = res_op_len_s + 1;
+        char *res_output_path = NULL;
+        if ((res_output_path = malloc(res_op_len_b)) == NULL) {
+            if (malloced_output_path) {
+                free(output_path);
+            }
+
+            printf("Out of memory\n");
+            return ENOMEM;
+        }
+
+        if (res->info.extension != NULL && strlen(res->info.extension) > 0) {
+            snprintf(res_output_path, res_op_len_b, "%s%c%s%c%s",
+                    output_path, PATH_DELIMITER, res->info.base_name, EXTENSION_DELIMITER, res->info.extension);
+        } else {
+            snprintf(res_output_path, res_op_len_b, "%s%c%s",
+                    output_path, PATH_DELIMITER, res->info.base_name);
+        }
+
+        FILE *output_file = NULL;
+        if ((output_file = fopen(res_output_path, "w+b")) == NULL) {
+            free(res_output_path);
+
+            if (malloced_output_path) {
+                free(output_path);
+            }
+
+            printf("Failed to open output file\n");
+            return errno;
+        }
+
+        free(res_output_path);
+
+        if (fwrite(res->data, res->len, 1, output_file) != 1) {
+            fclose(output_file);
+
+            if (malloced_output_path) {
+                free(output_path);
+            }
+
+            printf("Failed to write to output file\n");
+            return errno;
+        }
+
+        fclose(output_file);
+
+        printf("Successfully unpacked %s to disk\n", args->resource_path);
+
+        rc = 0;
+    } else {
+        if ((rc = unpack_arp_to_fs(package, output_path)) == 0) {
+            printf("Successfully unpacked package to disk!\n");
+        } else {
+            printf("Failed to unpack package to disk (rc: %d) (libarp says: %s)\n", rc, libarp_get_error());
+        }
     }
 
     if (malloced_output_path) {

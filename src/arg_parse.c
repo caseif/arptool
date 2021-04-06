@@ -92,6 +92,8 @@ char *parse_args(int argc, char **argv, arp_cmd_args_t *out_args) {
                     }
 
                     out_args->part_size = param_l;
+                } else if (CMP_LONG_FLAG(flag, flag_len, FLAG_RESOURCE_PATH_LONG)) {
+                    out_args->resource_path = param;
                 } else {
                     PARSE_FAIL("Unrecognized flag '%s'", arg);
                 }
@@ -126,6 +128,8 @@ char *parse_args(int argc, char **argv, arp_cmd_args_t *out_args) {
                     }
 
                     out_args->part_size = param_l;
+                } else if (strcmp(flag, FLAG_RESOURCE_PATH_SHORT) == 0) {
+                    out_args->resource_path = param;
                 } else {
                     PARSE_FAIL("Unrecognized flag '%s'", arg);
                 }

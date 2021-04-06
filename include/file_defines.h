@@ -14,3 +14,5 @@
 #else
 #define PATH_DELIMITER '/'
 #endif
+
+#define EXTENSION_DELIMITER '.'
