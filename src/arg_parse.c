@@ -32,6 +32,8 @@ char *parse_args(int argc, char **argv, arp_cmd_args_t *out_args) {
     size_t pos = 0;
     bool stopped_args = false;
 
+    out_args->is_help = false;
+
     for (int i = 1; i < argc; i++) {
         char *arg = argv[i];
         
@@ -54,7 +56,10 @@ char *parse_args(int argc, char **argv, arp_cmd_args_t *out_args) {
                     flag_len = strlen(flag);
                 }
 
-                if (CMP_LONG_FLAG(flag, flag_len, NFLAG_DEFLATE)) {
+                if (CMP_LONG_FLAG(flag, flag_len, FLAG_HELP_LONG)) {
+                    out_args->is_help = true;
+                    continue;
+                } else if (CMP_LONG_FLAG(flag, flag_len, NFLAG_DEFLATE)) {
                     if (eq_pos != NULL) {
                         PARSE_FAIL("Argument '%s' must not have a parameter", arg);
                     }
@@ -101,6 +106,11 @@ char *parse_args(int argc, char **argv, arp_cmd_args_t *out_args) {
                 continue;
             } else if (arg[0] == '-') {
                 char *flag = arg + 1;
+
+                if (strcmp(flag, FLAG_HELP_SHORT) == 0 || strcmp(flag, FLAG_HELP_SHORT_ALT) == 0) {
+                    out_args->is_help = true;
+                    continue;
+                }
 
                 if (i == argc - 1) {
                     // all short flags require param
@@ -155,7 +165,7 @@ char *parse_args(int argc, char **argv, arp_cmd_args_t *out_args) {
         pos += 1;
     }
 
-    if (pos < REQUIRED_POS_ARGS) {
+    if (!out_args->is_help && pos < REQUIRED_POS_ARGS) {
         PARSE_FAIL("Missing positional args (expected %u, found %lu)", REQUIRED_POS_ARGS, pos);
     }
     

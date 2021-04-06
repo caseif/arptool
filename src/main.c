@@ -19,11 +19,11 @@
 #include <stdlib.h>
 #include <string.h>
 
-void sigtrap_handler(int signum) {
+static void _sigtrap_handler(int signum) {
 }
 
 int main(int argc, char **argv) {
-    signal(SIGTRAP, sigtrap_handler);
+    signal(SIGTRAP, _sigtrap_handler);
 
     arp_cmd_args_t args;
     memset(&args, 0, sizeof(args));
@@ -66,9 +66,8 @@ int main(int argc, char **argv) {
         return EINVAL;
     }
 
-    if (strcmp(args.verb, VERB_HELP) == 0) {
-        printf("Help coming soon(TM).\n");
-        return 0;
+    if (args.is_help) {
+        return exec_cmd_help(&args);
     } else if (strcmp(args.verb, VERB_PACK) == 0) {
         return exec_cmd_pack(&args);
     } else if (strcmp(args.verb, VERB_UNPACK) == 0) {

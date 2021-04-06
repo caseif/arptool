@@ -9,6 +9,9 @@
 
 #pragma once
 
+#define FLAG_HELP_SHORT "?"
+#define FLAG_HELP_SHORT_ALT "h"
+#define FLAG_HELP_LONG "help"
 #define FLAG_COMPRESSION_SHORT "c"
 #define FLAG_COMPRESSION_LONG "compression"
 #define FLAG_NAME_SHORT "f"
@@ -34,4 +37,3 @@
 #define VERB_PACK "pack"
 #define VERB_UNPACK "unpack"
 #define VERB_LIST "list"
-#define VERB_HELP "help"

@@ -9,9 +9,12 @@
 
 #pragma once
 
+#include <stdbool.h>
 #include <stddef.h>
 
 typedef struct ArpCmdArgs {
+    bool is_help;
+
     char *verb;
     char *src_path;
     char *compression;
