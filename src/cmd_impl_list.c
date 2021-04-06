@@ -50,9 +50,7 @@ int exec_cmd_list(arp_cmd_args_t *args) {
         printf(" ");
     }
 
-    printf("   ");
-
-    printf("PATH\n");
+    printf("   PATH\n");
 
     for (size_t i = 0; i < max_mt + max_path + 3; i++) {
         printf("-");
@@ -69,11 +67,7 @@ int exec_cmd_list(arp_cmd_args_t *args) {
             printf(" ");
         }
 
-        printf("   ");
-
-        printf(res->path);
-
-        printf("\n");
+        printf("   %s\n", res->path);
     }
 
     return 0;
