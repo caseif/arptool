@@ -8,20 +8,21 @@
 
 #define MAX(a, b) ((a > b) ? (a) : (b))
 
-void exec_cmd_list(arp_cmd_args_t *args) {
+int exec_cmd_list(arp_cmd_args_t *args) {
     char *src_path = args->src_path;
 
     ArgusPackage package;
-    if (load_package_from_file(src_path, &package) != 0) {
+    int rc = 0xDEADBEEF;
+    if ((rc = load_package_from_file(src_path, &package)) != 0) {
         printf("Failed to load package (libarp says: %s)\n", libarp_get_error());
-        return;
+        return rc;
     }
 
     arp_resource_info_t *res_info;
     size_t res_count;
-    if (list_resources(package, &res_info, &res_count) != 0) {
+    if ((rc = list_resources(package, &res_info, &res_count)) != 0) {
         printf("Failed to list resources in package (libarp says: %s)\n", libarp_get_error());
-        return;
+        return rc;
     }
 
     size_t max_path = strlen("PATH");
@@ -65,4 +66,6 @@ void exec_cmd_list(arp_cmd_args_t *args) {
 
         printf("\n");
     }
+
+    return 0;
 }

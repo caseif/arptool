@@ -7,6 +7,7 @@
 #include "libarp/defines.h"
 #include "libarp/pack.h"
 
+#include <errno.h>
 #include <limits.h>
 #include <stdbool.h>
 #include <stdio.h>
@@ -20,7 +21,7 @@
 #include <unistd.h>
 #endif
 
-void exec_cmd_pack(arp_cmd_args_t *args) {
+int exec_cmd_pack(arp_cmd_args_t *args) {
     char *src_path = args->src_path;
     char *output_path = NULL;
     char *package_name = args->package_name;
@@ -31,7 +32,7 @@ void exec_cmd_pack(arp_cmd_args_t *args) {
 
     bool malloced_output_path = false;
     if ((output_path = get_output_path(args, &malloced_output_path)) == NULL) {
-        return;
+        return errno;
     }
 
     if (package_name == NULL) {
@@ -62,7 +63,7 @@ void exec_cmd_pack(arp_cmd_args_t *args) {
             }
 
             printf("Unrecognized compression type\n");
-            return;
+            return EINVAL;
         }
     }
 
@@ -80,4 +81,6 @@ void exec_cmd_pack(arp_cmd_args_t *args) {
     if (malloced_output_path) {
         free(output_path);
     }
+
+    return rc;
 }

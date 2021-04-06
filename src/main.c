@@ -13,11 +13,18 @@
 
 #include "libarp/defines.h"
 
+#include <errno.h>
+#include <signal.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
+void sigtrap_handler(int signum) {
+}
+
 int main(int argc, char **argv) {
+    signal(SIGTRAP, sigtrap_handler);
+
     arp_cmd_args_t args;
     memset(&args, 0, sizeof(args));
 
@@ -56,19 +63,20 @@ int main(int argc, char **argv) {
 
     if (args.package_namespace != NULL && strlen(args.package_namespace) > ARP_NAMESPACE_MAX) {
         printf("Namespace is too long (max %d chars)\n", ARP_NAMESPACE_MAX);
-        exit(-1);
+        return EINVAL;
     }
 
     if (strcmp(args.verb, VERB_HELP) == 0) {
         printf("Help coming soon(TM).\n");
         return 0;
     } else if (strcmp(args.verb, VERB_PACK) == 0) {
-        exec_cmd_pack(&args);
+        return exec_cmd_pack(&args);
     } else if (strcmp(args.verb, VERB_UNPACK) == 0) {
-        exec_cmd_unpack(&args);
+        return exec_cmd_unpack(&args);
     } else if (strcmp(args.verb, VERB_LIST) == 0) {
-        exec_cmd_list(&args);
+        return exec_cmd_list(&args);
     } else {
         printf("Unrecognized verb: %s\n", args.verb);
+        return EINVAL;
     }
 }
