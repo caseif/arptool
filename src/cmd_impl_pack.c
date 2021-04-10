@@ -63,7 +63,7 @@ int exec_cmd_pack(arp_cmd_args_t *args) {
 
     if (args->compression != NULL) {
         if (strcmp(args->compression, CMPR_STR_DEFLATE) == 0) {
-            compression_magic = ARP_COMPRESS_MAGIC_DEFLATE;
+            compression_magic = ARP_COMPRESS_TYPE_DEFLATE;
         } else if (strcmp(args->compression, CMPR_STR_NONE) == 0) {
             // no-op
         } else {
