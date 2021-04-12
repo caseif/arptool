@@ -84,7 +84,7 @@ int exec_cmd_pack(arp_cmd_args_t *args) {
         printf("Successfully wrote archive to %s\n", output_path);
     } else {
         printf("Packing failed\n");
-        printf("libarp says: %s (rc %d)\n", libarp_get_error(), rc);
+        printf("libarp says: %s (rc: %d)\n", libarp_get_error(), rc);
     }
 
     if (malloced_output_path) {
