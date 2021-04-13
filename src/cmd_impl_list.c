@@ -20,16 +20,16 @@
 int exec_cmd_list(arp_cmd_args_t *args) {
     char *src_path = args->src_path;
 
-    ArgusPackage package;
+    ArpPackage package;
     int rc = 0xDEADBEEF;
     if ((rc = load_package_from_file(src_path, &package)) != 0) {
         printf("Failed to load package (libarp says: %s)\n", libarp_get_error());
         return rc;
     }
 
-    arp_resource_info_t *res_info;
-    size_t res_count;
-    if ((rc = list_resources(package, &res_info, &res_count)) != 0) {
+    arp_resource_listing_t *res_listings;
+    size_t listing_count;
+    if ((rc = get_resource_listing(package, &res_listings, &listing_count)) != 0) {
         printf("Failed to list resources in package (libarp says: %s)\n", libarp_get_error());
         return rc;
     }
@@ -37,11 +37,11 @@ int exec_cmd_list(arp_cmd_args_t *args) {
     size_t max_path = strlen("PATH");
     size_t max_ext = 0;
     size_t max_mt = strlen("TYPE");
-    for (size_t i = 0; i < res_count; i++) {
-        arp_resource_info_t *res = &res_info[i];
-        max_path = MAX(max_path, strlen(res->path));
-        max_ext = MAX(max_ext, strlen(res->extension));
-        max_mt = MAX(max_mt, strlen(res->media_type));
+    for (size_t i = 0; i < listing_count; i++) {
+        arp_resource_listing_t *listing = &res_listings[i];
+        max_path = MAX(max_path, strlen(listing->path));
+        max_ext = MAX(max_ext, strlen(listing->meta.extension));
+        max_mt = MAX(max_mt, strlen(listing->meta.media_type));
     }
 
     printf("TYPE");
@@ -57,17 +57,17 @@ int exec_cmd_list(arp_cmd_args_t *args) {
     }
     printf("\n");
 
-    for (size_t i = 0; i < res_count; i++) {
-        arp_resource_info_t *res = &res_info[i];
+    for (size_t i = 0; i < listing_count; i++) {
+        arp_resource_listing_t *listing = &res_listings[i];
 
-        printf(res->media_type);
+        printf(listing->meta.media_type);
 
-        size_t type_padding = max_mt - strlen(res->media_type);
+        size_t type_padding = max_mt - strlen(listing->meta.media_type);
         for (size_t i = 0; i < type_padding; i++) {
             printf(" ");
         }
 
-        printf("   %s\n", res->path);
+        printf("   %s\n", listing->path);
     }
 
     return 0;
