@@ -21,6 +21,7 @@
 
 char *get_output_path(const arp_cmd_args_t *args, bool *malloced) {
     if (args->output_path != NULL) {
+        *malloced = false;
         return args->output_path;
     } else {
         char *res = NULL;

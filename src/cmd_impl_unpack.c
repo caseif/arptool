@@ -52,62 +52,11 @@ int exec_cmd_unpack(arp_cmd_args_t *args) {
             return rc;
         }
 
-        arp_resource_t *res;
-        if ((res = load_resource(&meta)) == NULL) {
-            if (malloced_output_path) {
-                free(output_path);
-            }
-
-            printf("Failed to load resource (libarp says: %s)\n", libarp_get_error());
-            return errno;
+        rc = unpack_resource_to_fs(&meta, output_path);
+        if (rc != 0) {
+            printf("Failed to unpack resource to disk (libarp says: %s)\n", libarp_get_error());
+            return rc;
         }
-
-        size_t res_op_len_s = strlen(output_path) + 1 + strlen(res->meta.base_name) + 1 + strlen(res->meta.extension);
-        size_t res_op_len_b = res_op_len_s + 1;
-        char *res_output_path = NULL;
-        if ((res_output_path = malloc(res_op_len_b)) == NULL) {
-            if (malloced_output_path) {
-                free(output_path);
-            }
-
-            printf("Out of memory\n");
-            return ENOMEM;
-        }
-
-        if (res->meta.extension != NULL && strlen(res->meta.extension) > 0) {
-            snprintf(res_output_path, res_op_len_b, "%s%c%s%c%s",
-                    output_path, PATH_DELIMITER, res->meta.base_name, EXTENSION_DELIMITER, res->meta.extension);
-        } else {
-            snprintf(res_output_path, res_op_len_b, "%s%c%s",
-                    output_path, PATH_DELIMITER, res->meta.base_name);
-        }
-
-        FILE *output_file = NULL;
-        if ((output_file = fopen(res_output_path, "w+b")) == NULL) {
-            free(res_output_path);
-
-            if (malloced_output_path) {
-                free(output_path);
-            }
-
-            printf("Failed to open output file\n");
-            return errno;
-        }
-
-        free(res_output_path);
-
-        if (fwrite(res->data, res->meta.size, 1, output_file) != 1) {
-            fclose(output_file);
-
-            if (malloced_output_path) {
-                free(output_path);
-            }
-
-            printf("Failed to write to output file\n");
-            return errno;
-        }
-
-        fclose(output_file);
 
         printf("Successfully unpacked %s to disk\n", args->resource_path);
 
