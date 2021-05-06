@@ -87,6 +87,8 @@ int exec_cmd_pack(arp_cmd_args_t *args) {
         printf("libarp says: %s (rc: %d)\n", libarp_get_error(), rc);
     }
 
+    free_packing_options(opts);
+
     if (malloced_output_path) {
         free(output_path);
     }

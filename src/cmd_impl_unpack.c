@@ -44,6 +44,8 @@ int exec_cmd_unpack(arp_cmd_args_t *args) {
     if (args->resource_path != NULL) {
         arp_resource_meta_t meta;
         if ((rc = get_resource_meta(package, args->resource_path, &meta)) != 0) {
+            unload_package(package);
+
             if (malloced_output_path) {
                 free(output_path);
             }
@@ -53,12 +55,13 @@ int exec_cmd_unpack(arp_cmd_args_t *args) {
         }
 
         rc = unpack_resource_to_fs(&meta, output_path);
-        if (rc != 0) {
+
+        if (rc == 0) {
+            printf("Successfully unpacked %s to disk\n", args->resource_path);
+        } else {
             printf("Failed to unpack resource to disk (libarp says: %s)\n", libarp_get_error());
-            return rc;
         }
 
-        printf("Successfully unpacked %s to disk\n", args->resource_path);
 
         rc = 0;
     } else {
@@ -68,6 +71,8 @@ int exec_cmd_unpack(arp_cmd_args_t *args) {
             printf("Failed to unpack package to disk (rc: %d) (libarp says: %s)\n", rc, libarp_get_error());
         }
     }
+
+    unload_package(package);
 
     if (malloced_output_path) {
         free(output_path);
