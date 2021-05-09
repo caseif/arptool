@@ -20,13 +20,19 @@
 
 #define ERR_MSG_BUF_LEN 256
 
-#define PARSE_FAIL(format, ...) { \
-    char *_cpp_err_msg_buf = malloc(ERR_MSG_BUF_LEN); \
-    snprintf(_cpp_err_msg_buf, ERR_MSG_BUF_LEN, format, ##__VA_ARGS__); \
-    return _cpp_err_msg_buf; \
-}
-
 #define CMP_LONG_FLAG(arg, len, flag) (strncmp(arg, flag, len) == 0 && strlen(flag) == len)
+
+static char *_parse_failed(const char *format, ...) {
+    char *_cpp_err_msg_buf = malloc(ERR_MSG_BUF_LEN);
+    size_t limit = ERR_MSG_BUF_LEN;
+
+    va_list args;
+    va_start(args, format);
+    vsnprintf(_cpp_err_msg_buf, limit, format, args);
+    va_end(args);
+
+    return _cpp_err_msg_buf;
+}
 
 char *parse_args(int argc, char **argv, arp_cmd_args_t *out_args) {
     size_t pos = 0;
@@ -61,7 +67,7 @@ char *parse_args(int argc, char **argv, arp_cmd_args_t *out_args) {
                     continue;
                 } else if (CMP_LONG_FLAG(flag, flag_len, NFLAG_DEFLATE)) {
                     if (eq_pos != NULL) {
-                        PARSE_FAIL("Argument '%s' must not have a parameter", arg);
+                        return _parse_failed("Argument '%s' must not have a parameter", arg);
                     }
 
                     out_args->compression = CMPR_STR_DEFLATE;
@@ -69,12 +75,12 @@ char *parse_args(int argc, char **argv, arp_cmd_args_t *out_args) {
                 }
 
                 if (eq_pos == NULL) {
-                    PARSE_FAIL("Argument '%s' must have a parameter", arg);
+                    return _parse_failed("Argument '%s' must have a parameter", arg);
                 }
 
                 if (i == argc - 1) {
                     // all other flags require param
-                    PARSE_FAIL("Expected parameter for flag '%s'", arg);
+                    return _parse_failed("Expected parameter for flag '%s'", arg);
                 }
 
                 char *param = eq_pos + 1;
@@ -93,14 +99,14 @@ char *parse_args(int argc, char **argv, arp_cmd_args_t *out_args) {
                     size_t param_l = strtoull(param, NULL, 10);
 
                     if (errno != 0) {
-                        PARSE_FAIL("Invalid param '%s' for flag '%s'", param, arg);
+                        return _parse_failed("Invalid param '%s' for flag '%s'", param, arg);
                     }
 
                     out_args->part_size = param_l;
                 } else if (CMP_LONG_FLAG(flag, flag_len, FLAG_RESOURCE_PATH_LONG)) {
                     out_args->resource_path = param;
                 } else {
-                    PARSE_FAIL("Unrecognized flag '%s'", arg);
+                    return _parse_failed("Unrecognized flag '%s'", arg);
                 }
 
                 continue;
@@ -114,7 +120,7 @@ char *parse_args(int argc, char **argv, arp_cmd_args_t *out_args) {
 
                 if (i == argc - 1) {
                     // all short flags require param
-                    PARSE_FAIL("Expected parameter for flag '%s'", arg);
+                    return _parse_failed("Expected parameter for flag '%s'", arg);
                 }
 
                 char *param = argv[i + 1];
@@ -134,14 +140,14 @@ char *parse_args(int argc, char **argv, arp_cmd_args_t *out_args) {
                     size_t param_l = strtoull(param, NULL, 10);
 
                     if (errno != 0) {
-                        PARSE_FAIL("Invalid param '%s' for flag '%s'", param, arg);
+                        return _parse_failed("Invalid param '%s' for flag '%s'", param, arg);
                     }
 
                     out_args->part_size = param_l;
                 } else if (strcmp(flag, FLAG_RESOURCE_PATH_SHORT) == 0) {
                     out_args->resource_path = param;
                 } else {
-                    PARSE_FAIL("Unrecognized flag '%s'", arg);
+                    return _parse_failed("Unrecognized flag '%s'", arg);
                 }
 
                 continue;
@@ -158,7 +164,7 @@ char *parse_args(int argc, char **argv, arp_cmd_args_t *out_args) {
                 break;
             }
             default: {
-                PARSE_FAIL("Found unexpected positional arg '%s'", arg);
+                return _parse_failed("Found unexpected positional arg '%s'", arg);
             }
         }
 
@@ -166,7 +172,7 @@ char *parse_args(int argc, char **argv, arp_cmd_args_t *out_args) {
     }
 
     if (!out_args->is_help && pos < REQUIRED_POS_ARGS) {
-        PARSE_FAIL("Missing positional args (expected %u, found %lu)", REQUIRED_POS_ARGS, pos);
+        return _parse_failed("Missing positional args (expected %u, found %lu)", REQUIRED_POS_ARGS, pos);
     }
     
     return NULL;
