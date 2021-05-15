@@ -12,6 +12,7 @@
 #include "compression_defines.h"
 
 #include <errno.h>
+#include <stdarg.h>
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdio.h>

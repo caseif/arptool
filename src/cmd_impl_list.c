@@ -60,7 +60,7 @@ int exec_cmd_list(arp_cmd_args_t *args) {
     for (size_t i = 0; i < listing_count; i++) {
         arp_resource_listing_t *listing = &res_listings[i];
 
-        printf(listing->meta.media_type);
+        printf("%s", listing->meta.media_type);
 
         size_t type_padding = max_mt - strlen(listing->meta.media_type);
         for (size_t i = 0; i < type_padding; i++) {

@@ -27,7 +27,7 @@ char *get_output_path(const arp_cmd_args_t *args, bool *malloced) {
         char *res = NULL;
         #ifdef _WIN32
         size_t required_size = GetCurrentDirectory(0, NULL);
-        if ((res = malloc(required_size)) {
+        if ((res = malloc(required_size)) == NULL) {
             errno = ENOMEM;
             printf("Out of memory\n");
             return NULL;
