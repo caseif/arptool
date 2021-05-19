@@ -11,6 +11,7 @@
 #include "arg_util.h"
 #include "cmd_impls.h"
 #include "file_defines.h"
+#include "misc_defines.h"
 
 #include "libarp/unpack.h"
 
@@ -28,8 +29,8 @@ int exec_cmd_unpack(arp_cmd_args_t *args) {
         return errno;
     }
 
-    ArpPackage package;
-    int rc = 0xDEADBEEF;
+    ArpPackage package = NULL;
+    int rc = UNINIT_U32;
     if ((rc = load_package_from_file(src_path, &package)) != 0) {
         if (malloced_output_path) {
             free(output_path);

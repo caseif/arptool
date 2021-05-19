@@ -19,9 +19,11 @@
 #include <stdlib.h>
 #include <string.h>
 
+#define BASE_10 10
+
 #define ERR_MSG_BUF_LEN 256
 
-#define CMP_LONG_FLAG(arg, len, flag) (strncmp(arg, flag, len) == 0 && strlen(flag) == len)
+#define CMP_LONG_FLAG(arg, len, flag) (strncmp(arg, flag, len) == 0 && strlen(flag) == (len))
 
 static char *_parse_failed(const char *format, ...) {
     char *_cpp_err_msg_buf = malloc(ERR_MSG_BUF_LEN);
@@ -56,7 +58,7 @@ char *parse_args(int argc, char **argv, arp_cmd_args_t *out_args) {
 
                 char *eq_pos = strchr(arg, '=');
 
-                size_t flag_len;
+                size_t flag_len = 0;
                 if (eq_pos != NULL) {
                     flag_len = eq_pos - flag;
                 } else {
@@ -97,7 +99,7 @@ char *parse_args(int argc, char **argv, arp_cmd_args_t *out_args) {
                 } else if (CMP_LONG_FLAG(flag, flag_len, FLAG_OUTPUT_LONG)) {
                     out_args->output_path = param;
                 } else if (CMP_LONG_FLAG(flag, flag_len, FLAG_PART_SIZE_LONG)) {
-                    size_t param_l = strtoull(param, NULL, 10);
+                    size_t param_l = strtoull(param, NULL, BASE_10);
 
                     if (errno != 0) {
                         return _parse_failed("Invalid param '%s' for flag '%s'", param, arg);
@@ -138,7 +140,7 @@ char *parse_args(int argc, char **argv, arp_cmd_args_t *out_args) {
                 } else if (strcmp(flag, FLAG_OUTPUT_SHORT) == 0) {
                     out_args->output_path = param;
                 } else if (strcmp(flag, FLAG_PART_SIZE_SHORT) == 0) {
-                    size_t param_l = strtoull(param, NULL, 10);
+                    size_t param_l = strtoull(param, NULL, BASE_10);
 
                     if (errno != 0) {
                         return _parse_failed("Invalid param '%s' for flag '%s'", param, arg);

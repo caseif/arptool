@@ -37,3 +37,5 @@
 #define VERB_PACK "pack"
 #define VERB_UNPACK "unpack"
 #define VERB_LIST "list"
+
+extern int make_iso_compilers_happy;

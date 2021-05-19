@@ -16,3 +16,5 @@
 #endif
 
 #define EXTENSION_DELIMITER '.'
+
+extern int make_iso_compilers_happy;

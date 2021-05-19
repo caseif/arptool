@@ -9,26 +9,27 @@
 
 #include "arg_parse.h"
 #include "cmd_impls.h"
+#include "misc_defines.h"
 
 #include "libarp/unpack.h"
 
 #include <stdio.h>
 #include <string.h>
 
-#define MAX(a, b) ((a > b) ? (a) : (b))
+#define MAX(a, b) (((a) > (b)) ? (a) : (b))
 
 int exec_cmd_list(arp_cmd_args_t *args) {
     char *src_path = args->src_path;
 
-    ArpPackage package;
-    int rc = 0xDEADBEEF;
+    ArpPackage package = NULL;
+    int rc = UNINIT_U32;
     if ((rc = load_package_from_file(src_path, &package)) != 0) {
         printf("Failed to load package (libarp says: %s)\n", libarp_get_error());
         return rc;
     }
 
-    arp_resource_listing_t *res_listings;
-    size_t listing_count;
+    arp_resource_listing_t *res_listings = NULL;
+    size_t listing_count = 0;
     if ((rc = get_resource_listing(package, &res_listings, &listing_count)) != 0) {
         printf("Failed to list resources in package (libarp says: %s)\n", libarp_get_error());
         return rc;

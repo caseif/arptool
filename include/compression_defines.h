@@ -11,3 +11,5 @@
 
 #define CMPR_STR_NONE "none"
 #define CMPR_STR_DEFLATE "deflate"
+
+extern int make_iso_compilers_happy;

@@ -19,7 +19,10 @@
 #include <stdlib.h>
 #include <string.h>
 
+#define UNUSED(x) (void)(x)
+
 static void _sigtrap_handler(int signum) {
+    UNUSED(signum);
 }
 
 int main(int argc, char **argv) {
