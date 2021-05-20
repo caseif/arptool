@@ -24,7 +24,7 @@ set(EXT_LIBS "")
 
 set(LIBARP_ROOT_DIR "${PROJECT_SOURCE_DIR}/libs/libarp")
 set(LIBARP_SOURCE_DIR "${LIBARP_ROOT_DIR}/src")
-set(LIBARP_LIBRARY "libarp")
+set(LIBARP_LIBRARY "libarp_static")
 set(LIBARP_INCLUDE_DIR "${LIBARP_ROOT_DIR}/include")
 add_subdirectory("${LIBARP_ROOT_DIR}")
 list(APPEND EXT_LIBS "${LIBARP_LIBRARY}")

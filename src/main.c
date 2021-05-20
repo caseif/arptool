@@ -19,6 +19,10 @@
 #include <stdlib.h>
 #include <string.h>
 
+#ifdef _WIN32
+#define SIGTRAP 5
+#endif
+
 #define UNUSED(x) (void)(x)
 
 static void _sigtrap_handler(int signum) {

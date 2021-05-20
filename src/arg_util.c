@@ -10,11 +10,12 @@
 #include "arg_parse.h"
 #include "arg_util.h"
 
+#include <errno.h>
 #include <stdio.h>
 #include <stdlib.h>
 
 #ifdef _WIN32
-#include <winbase.h>
+#include <windows.h>
 #else
 #include <unistd.h>
 #endif
@@ -34,7 +35,7 @@ char *get_output_path(const arp_cmd_args_t *args, bool *malloced) {
         }
         *malloced = true;
         GetCurrentDirectory(required_size, res);
-        return res
+        return res;
         #else
         res = getcwd(NULL, 0);
         *malloced = true;

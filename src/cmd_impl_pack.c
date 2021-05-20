@@ -80,6 +80,10 @@ int exec_cmd_pack(arp_cmd_args_t *args) {
     ArpPackingOptions opts = create_v1_packing_options(package_name, package_namespace, part_size, compression_magic,
             mappings_path);
 
+    if (opts == NULL) {
+        return errno;
+    }
+
     int rc = UNINIT_U32;
     if ((rc = create_arp_from_fs(src_path, output_path, opts, NULL)) == 0) {
         printf("Successfully wrote archive to %s\n", output_path);
