@@ -31,6 +31,8 @@
 #include <unistd.h>
 #endif
 
+#define MAX(a, b) ((a) > (b) ? (a) : (b))
+
 int exec_cmd_pack(arp_cmd_args_t *args) {
     char *src_path = args->src_path;
     char *output_path = NULL;
@@ -46,7 +48,11 @@ int exec_cmd_pack(arp_cmd_args_t *args) {
     }
 
     if (package_name == NULL) {
-        char *delim = strrchr(src_path, PATH_DELIMITER);
+        #ifdef _WIN32
+        char *delim = MAX(strrchr(src_path, WIN32_PATH_DELIM), strrchr(src_path, UNIX_PATH_DELIM));
+        #else
+        char *delim = strrchr(src_path, PATH_DELIM);
+        #endif
         if (delim != NULL) {
             package_name = delim + 1;
         } else {

@@ -9,12 +9,15 @@
 
 #pragma once
 
+#define WIN32_PATH_DELIM '\\'
+#define UNIX_PATH_DELIM '/'
+
 #ifdef _WIN32
-#define PATH_DELIMITER '\\'
+#define PATH_DELIM WIN32_PATH_DELIM
 #else
-#define PATH_DELIMITER '/'
+#define PATH_DELIM WIN32_PATH_DELIM
 #endif
 
-#define EXTENSION_DELIMITER '.'
+#define EXTENSION_DELIM '.'
 
 extern int make_iso_compilers_happy;
