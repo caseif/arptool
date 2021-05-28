@@ -48,15 +48,27 @@ int exec_cmd_pack(arp_cmd_args_t *args) {
     }
 
     if (package_name == NULL) {
+        for (size_t i = strlen(src_path) - 1; i > 0; i--) {
+            if (IS_PATH_DELIM(src_path[i])) {
+                src_path[i] = '\0';
+            } else {
+                break;
+            }
+        }
+
         #ifdef _WIN32
-        char *delim = MAX(strrchr(src_path, WIN32_PATH_DELIM), strrchr(src_path, UNIX_PATH_DELIM));
+        char *delim = MAX(strrchr(src_path, WIN32_PATH_DELIM),
+                strrchr(src_path, UNIX_PATH_DELIM));
         #else
         char *delim = strrchr(src_path, PATH_DELIM);
         #endif
-        if (delim != NULL) {
-            package_name = delim + 1;
-        } else {
+
+        if (delim == NULL) {
             package_name = src_path;
+        } else if (delim == src_path) { // special case: fs root
+            package_name = "package";
+        } else {
+            package_name = delim + 1;
         }
     }
 
@@ -91,6 +103,7 @@ int exec_cmd_pack(arp_cmd_args_t *args) {
     }
 
     int rc = UNINIT_U32;
+    src_path[strlen(src_path)] = '/';
     if ((rc = create_arp_from_fs(src_path, output_path, opts, NULL)) == 0) {
         printf("Successfully wrote archive to %s\n", output_path);
     } else {

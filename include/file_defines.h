@@ -14,9 +14,12 @@
 
 #ifdef _WIN32
 #define PATH_DELIM WIN32_PATH_DELIM
+#define IS_PATH_DELIM(c) ((c) == UNIX_PATH_DELIM || (c) == WIN32_PATH_DELIM)
 #else
-#define PATH_DELIM WIN32_PATH_DELIM
+#define PATH_DELIM UNIX_PATH_DELIM
+#define IS_PATH_DELIM(c) ((c) == UNIX_PATH_DELIM)
 #endif
+
 
 #define EXTENSION_DELIM '.'
 

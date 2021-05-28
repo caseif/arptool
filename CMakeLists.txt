@@ -20,6 +20,8 @@ if(NOT CMAKE_BUILD_TYPE)
   set(CMAKE_BUILD_TYPE Release)
 endif()
 
+set(CMAKE_EXPORT_COMPILE_COMMANDS 1)
+
 set(EXT_LIBS "")
 
 set(LIBARP_ROOT_DIR "${PROJECT_SOURCE_DIR}/libs/libarp")
@@ -60,6 +62,8 @@ set_target_properties("${PROJECT_NAME}" PROPERTIES WINDOWS_EXPORT_ALL_SYMBOLS ON
 # set target name
 set_target_properties("${PROJECT_NAME}" PROPERTIES OUTPUT_NAME "${PROJECT_NAME}")
 
+target_compile_definitions(${PROJECT_NAME} PUBLIC "$<$<CONFIG:DEBUG>:ARPTOOL_DEBUG>")
+
 if(MSVC)
   set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} /W4")
   set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} /Od")
@@ -78,7 +82,7 @@ else()
     SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -msse4.2")
   endif()
   if(MINGW)
-    set(CMAKE_C_FLAGS_DEBUG "-gdwarf-2")
+    set(CMAKE_C_FLAGS_DEBUG "-ggdb")
   else()
     set(CMAKE_C_FLAGS_DEBUG "-g")
   endif()
