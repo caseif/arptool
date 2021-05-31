@@ -11,6 +11,7 @@
 
 #include <stdbool.h>
 #include <stddef.h>
+#include <stdint.h>
 
 typedef struct ArpCmdArgs {
     bool is_help;
@@ -22,7 +23,7 @@ typedef struct ArpCmdArgs {
     char *package_name;
     char *package_namespace;
     char *output_path;
-    size_t part_size;
+    uint64_t part_size;
     char *resource_path;
 } arp_cmd_args_t;
 

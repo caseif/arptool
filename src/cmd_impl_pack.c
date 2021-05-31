@@ -40,7 +40,7 @@ int exec_cmd_pack(arp_cmd_args_t *args) {
     char package_namespace[ARP_NAMESPACE_MAX + 1];
     char *mappings_path = args->mappings_path;
     char *compression_magic = NULL;
-    size_t part_size = args->part_size;
+    uint64_t part_size = args->part_size;
 
     bool malloced_output_path = false;
     if ((output_path = get_output_path(args, &malloced_output_path)) == NULL) {
