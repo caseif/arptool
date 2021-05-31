@@ -103,7 +103,6 @@ int exec_cmd_pack(arp_cmd_args_t *args) {
     }
 
     int rc = UNINIT_U32;
-    src_path[strlen(src_path)] = '/';
     if ((rc = create_arp_from_fs(src_path, output_path, opts, NULL)) == 0) {
         printf("Successfully wrote archive to %s\n", output_path);
     } else {
