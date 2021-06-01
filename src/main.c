@@ -11,7 +11,7 @@
 #include "arg_parse.h"
 #include "cmd_impls.h"
 
-#include "libarp/defines.h"
+#include "libarp/util/defines.h"
 
 #include <errno.h>
 #include <signal.h>

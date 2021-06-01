@@ -11,7 +11,9 @@
 #include "cmd_impls.h"
 #include "misc_defines.h"
 
-#include "libarp/unpack.h"
+#include "libarp/util/error.h"
+#include "libarp/unpack/list.h"
+#include "libarp/unpack/load.h"
 
 #include <stdio.h>
 #include <string.h>

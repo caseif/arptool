@@ -13,11 +13,15 @@
 #include "file_defines.h"
 #include "misc_defines.h"
 
-#include "libarp/unpack.h"
+#include "libarp/util/error.h"
+#include "libarp/unpack/load.h"
+#include "libarp/unpack/resource.h"
+#include "libarp/unpack/unpack.h"
 
 #include <errno.h>
 #include <stdbool.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
 int exec_cmd_unpack(arp_cmd_args_t *args) {
