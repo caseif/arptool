@@ -13,10 +13,10 @@
 #include "file_defines.h"
 #include "misc_defines.h"
 
-#include "libarp/util/error.h"
 #include "libarp/unpack/load.h"
 #include "libarp/unpack/resource.h"
 #include "libarp/unpack/unpack.h"
+#include "libarp/util/error.h"
 
 #include <errno.h>
 #include <stdbool.h>
