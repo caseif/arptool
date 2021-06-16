@@ -10,6 +10,7 @@
 #include "arg_defs.h"
 #include "arg_parse.h"
 #include "cmd_impls.h"
+#include "help.h"
 
 #include "libarp/util/defines.h"
 
@@ -42,29 +43,29 @@ int main(int argc, char **argv) {
 
         free(parse_err);
 
-        exit(-1);
+        return EINVAL;
     }
 
-    if (strcmp(args.verb, VERB_PACK) != 0) {
+    if (args.verb != NULL && strcmp(args.verb, VERB_PACK) != 0) {
         if (args.compression != NULL) {
             printf("Compression param does not make sense with specified verb\n");
-            exit(-1);
+            return EINVAL;
         }
         if (args.mappings_path != NULL) {
             printf("Mappings path param does not make sense with specified verb\n");
-            exit(-1);
+            return EINVAL;
         }
         if (args.package_name != NULL) {
             printf("Package name param does not make sense with specified verb\n");
-            exit(-1);
+            return EINVAL;
         }
         if (args.package_namespace != NULL) {
             printf("Namespace param does not make sense with specified verb\n");
-            exit(-1);
+            return EINVAL;
         }
         if (args.part_size != 0) {
             printf("Part size param does not make sense with specified verb\n");
-            exit(-1);
+            return EINVAL;
         }
     }
 
@@ -75,14 +76,17 @@ int main(int argc, char **argv) {
 
     if (args.is_help) {
         return exec_cmd_help(&args);
-    } else if (strcmp(args.verb, VERB_PACK) == 0) {
-        return exec_cmd_pack(&args);
-    } else if (strcmp(args.verb, VERB_UNPACK) == 0) {
-        return exec_cmd_unpack(&args);
-    } else if (strcmp(args.verb, VERB_LIST) == 0) {
-        return exec_cmd_list(&args);
-    } else {
-        printf("Unrecognized verb: %s\n", args.verb);
-        return EINVAL;
+    } else if (args.verb != NULL) {
+        if (strcmp(args.verb, VERB_PACK) == 0) {
+            return exec_cmd_pack(&args);
+        } else if (strcmp(args.verb, VERB_UNPACK) == 0) {
+            return exec_cmd_unpack(&args);
+        } else if (strcmp(args.verb, VERB_LIST) == 0) {
+            return exec_cmd_list(&args);
+        }
     }
+
+    printf("Unrecognized verb: %s\n", args.verb);
+    print_general_usage_msg();
+    return EINVAL;
 }

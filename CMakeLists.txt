@@ -45,6 +45,8 @@ set(LIBRARY_OUTPUT_PATH "${LIB_OUT_DIR}")
 
 add_executable("${PROJECT_NAME}" ${C_FILES} ${H_FILES})
 
+configure_file("${INC_DIR}/config.h.in" "${INC_DIR}/config.h")
+
 target_include_directories("${PROJECT_NAME}" PUBLIC "${INC_DIR};${LIBARP_INCLUDE_DIR}")
 
 target_link_libraries("${PROJECT_NAME}" "${EXT_LIBS}")
