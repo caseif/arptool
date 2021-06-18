@@ -10,6 +10,10 @@ if("${CMAKE_SOURCE_DIR}" STREQUAL "${CMAKE_BINARY_DIR}")
   message(SEND_ERROR "In-source builds are not allowed.")
 endif()
 
+option(FEATURE_DEFLATE "Compile with support for DEFLATE compression" ON)
+
+set(LIBARP_FEATURE_DEFLATE "${FEATURE_DEFLATE}" CACHE BOOL "")
+
 set(CMAKE_CXX_OUTPUT_EXTENSION_REPLACE 1)
 
 if(NOT CMAKE_BUILD_TYPE)
