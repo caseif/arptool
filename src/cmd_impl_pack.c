@@ -14,9 +14,9 @@
 #include "file_defines.h"
 #include "misc_defines.h"
 
-#include "libarp/util/defines.h"
-#include "libarp/util/error.h"
-#include "libarp/pack/pack.h"
+#include "arp/util/defines.h"
+#include "arp/util/error.h"
+#include "arp/pack/pack.h"
 
 #include <errno.h>
 #include <limits.h>

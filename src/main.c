@@ -12,7 +12,7 @@
 #include "cmd_impls.h"
 #include "help.h"
 
-#include "libarp/util/defines.h"
+#include "arp/util/defines.h"
 
 #include <errno.h>
 #include <signal.h>

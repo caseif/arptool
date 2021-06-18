@@ -24,12 +24,12 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS 1)
 
 set(EXT_LIBS "")
 
-set(LIBARP_ROOT_DIR "${PROJECT_SOURCE_DIR}/libs/libarp")
-set(LIBARP_SOURCE_DIR "${LIBARP_ROOT_DIR}/src")
-set(LIBARP_LIBRARY "libarp_static")
-set(LIBARP_INCLUDE_DIR "${LIBARP_ROOT_DIR}/include")
-add_subdirectory("${LIBARP_ROOT_DIR}")
-list(APPEND EXT_LIBS "${LIBARP_LIBRARY}")
+set(ARP_ROOT_DIR "${PROJECT_SOURCE_DIR}/libs/libarp")
+set(ARP_SOURCE_DIR "${LIBARP_ROOT_DIR}/src")
+set(ARP_LIBRARY "arp_static")
+set(ARP_INCLUDE_DIR "${LIBARP_ROOT_DIR}/include")
+add_subdirectory("${ARP_ROOT_DIR}")
+list(APPEND EXT_LIBS "${ARP_LIBRARY}")
 
 set(SRC_DIR "${PROJECT_SOURCE_DIR}/src")
 set(INC_DIR "${PROJECT_SOURCE_DIR}/include")
