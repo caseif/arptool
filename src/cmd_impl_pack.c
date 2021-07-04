@@ -14,9 +14,9 @@
 #include "file_defines.h"
 #include "misc_defines.h"
 
+#include "arp/pack/pack.h"
 #include "arp/util/defines.h"
 #include "arp/util/error.h"
-#include "arp/pack/pack.h"
 
 #include <errno.h>
 #include <limits.h>
@@ -96,7 +96,7 @@ int exec_cmd_pack(arp_cmd_args_t *args) {
         }
     }
 
-    ArpPackingOptions opts = create_v1_packing_options(package_name, package_namespace, part_size, compression_magic,
+    ArpPackingOptions opts = arp_create_v1_packing_options(package_name, package_namespace, part_size, compression_magic,
             mappings_path);
 
     if (opts == NULL) {
@@ -104,14 +104,14 @@ int exec_cmd_pack(arp_cmd_args_t *args) {
     }
 
     int rc = UNINIT_U32;
-    if ((rc = create_arp_from_fs(src_path, output_path, opts, NULL)) == 0) {
+    if ((rc = arp_pack_from_fs(src_path, output_path, opts, NULL)) == 0) {
         printf("Successfully wrote archive to %s\n", output_path);
     } else {
         printf("Packing failed\n");
-        printf("libarp says: %s (rc: %d)\n", libarp_get_error(), rc);
+        printf("libarp says: %s (rc: %d)\n", arp_get_error(), rc);
     }
 
-    free_packing_options(opts);
+    arp_free_packing_options(opts);
 
     if (malloced_output_path) {
         free(output_path);

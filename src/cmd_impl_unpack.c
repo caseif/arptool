@@ -35,12 +35,12 @@ int exec_cmd_unpack(arp_cmd_args_t *args) {
 
     ArpPackage package = NULL;
     int rc = UNINIT_U32;
-    if ((rc = load_package_from_file(src_path, &package)) != 0) {
+    if ((rc = arp_load_from_file(src_path, &package)) != 0) {
         if (malloced_output_path) {
             free(output_path);
         }
 
-        printf("Failed to load package (rc: %d) (libarp says: %s)\n", rc, libarp_get_error());
+        printf("Failed to load package (rc: %d) (libarp says: %s)\n", rc, arp_get_error());
         return rc;
     }
 
@@ -48,36 +48,36 @@ int exec_cmd_unpack(arp_cmd_args_t *args) {
 
     if (args->resource_path != NULL) {
         arp_resource_meta_t meta;
-        if ((rc = get_resource_meta(package, args->resource_path, &meta)) != 0) {
-            unload_package(package);
+        if ((rc = arp_get_resource_meta(package, args->resource_path, &meta)) != 0) {
+            arp_unload(package);
 
             if (malloced_output_path) {
                 free(output_path);
             }
 
-            printf("Failed to get resource meta (libarp says: %s)\n", libarp_get_error());
+            printf("Failed to get resource meta (libarp says: %s)\n", arp_get_error());
             return rc;
         }
 
-        rc = unpack_resource_to_fs(&meta, output_path);
+        rc = arp_unpack_resource_to_fs(&meta, output_path);
 
         if (rc == 0) {
             printf("Successfully unpacked %s to disk\n", args->resource_path);
         } else {
-            printf("Failed to unpack resource to disk (libarp says: %s)\n", libarp_get_error());
+            printf("Failed to unpack resource to disk (libarp says: %s)\n", arp_get_error());
         }
 
 
         rc = 0;
     } else {
-        if ((rc = unpack_arp_to_fs(package, output_path)) == 0) {
+        if ((rc = arp_unpack_to_fs(package, output_path)) == 0) {
             printf("Successfully unpacked package to disk!\n");
         } else {
-            printf("Failed to unpack package to disk (rc: %d) (libarp says: %s)\n", rc, libarp_get_error());
+            printf("Failed to unpack package to disk (rc: %d) (libarp says: %s)\n", rc, arp_get_error());
         }
     }
 
-    unload_package(package);
+    arp_unload(package);
 
     if (malloced_output_path) {
         free(output_path);

@@ -25,15 +25,15 @@ int exec_cmd_list(arp_cmd_args_t *args) {
 
     ArpPackage package = NULL;
     int rc = UNINIT_U32;
-    if ((rc = load_package_from_file(src_path, &package)) != 0) {
-        printf("Failed to load package (libarp says: %s)\n", libarp_get_error());
+    if ((rc = arp_load_from_file(src_path, &package)) != 0) {
+        printf("Failed to load package (libarp says: %s)\n", arp_get_error());
         return rc;
     }
 
     arp_resource_listing_t *res_listings = NULL;
     size_t listing_count = 0;
-    if ((rc = get_resource_listing(package, &res_listings, &listing_count)) != 0) {
-        printf("Failed to list resources in package (libarp says: %s)\n", libarp_get_error());
+    if ((rc = arp_get_resource_listing(package, &res_listings, &listing_count)) != 0) {
+        printf("Failed to list resources in package (libarp says: %s)\n", arp_get_error());
         return rc;
     }
 
