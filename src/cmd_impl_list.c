@@ -47,30 +47,17 @@ int exec_cmd_list(arp_cmd_args_t *args) {
         max_mt = MAX(max_mt, strlen(listing->meta.media_type));
     }
 
-    printf("TYPE");
-
-    for (size_t i = 0; i < max_mt - strlen("TYPE"); i++) {
-        printf(" ");
-    }
-
-    printf("   PATH\n");
+    printf("%-*s   PATH\n", max_mt, "TYPE");
 
     for (size_t i = 0; i < max_mt + max_path + 3; i++) {
-        printf("-");
+        putchar('-');
     }
-    printf("\n");
+    putchar('\n');
 
     for (size_t i = 0; i < listing_count; i++) {
         arp_resource_listing_t *listing = &res_listings[i];
 
-        printf("%s", listing->meta.media_type);
-
-        size_t type_padding = max_mt - strlen(listing->meta.media_type);
-        for (size_t i = 0; i < type_padding; i++) {
-            printf(" ");
-        }
-
-        printf("   %s\n", listing->path);
+        printf("%-*s   %s\n", max_mt, listing->meta.media_type, listing->path);
     }
 
     return 0;
