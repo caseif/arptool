@@ -48,7 +48,7 @@ int exec_cmd_unpack(arp_cmd_args_t *args) {
 
     if (args->resource_path != NULL) {
         arp_resource_meta_t meta;
-        if ((rc = arp_get_resource_meta(package, args->resource_path, &meta)) != 0) {
+        if ((rc = arp_find_resource(package, args->resource_path, &meta)) != 0) {
             arp_unload(package);
 
             if (malloced_output_path) {

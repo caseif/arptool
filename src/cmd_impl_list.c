@@ -47,7 +47,7 @@ int exec_cmd_list(arp_cmd_args_t *args) {
         max_mt = MAX(max_mt, strlen(listing->meta.media_type));
     }
 
-    printf("%-*s   PATH\n", max_mt, "TYPE");
+    printf("%-*s   PATH\n", (int) max_mt, "TYPE");
 
     for (size_t i = 0; i < max_mt + max_path + 3; i++) {
         putchar('-');
@@ -57,7 +57,7 @@ int exec_cmd_list(arp_cmd_args_t *args) {
     for (size_t i = 0; i < listing_count; i++) {
         arp_resource_listing_t *listing = &res_listings[i];
 
-        printf("%-*s   %s\n", max_mt, listing->meta.media_type, listing->path);
+        printf("%-*s   %s\n", (int) max_mt, listing->meta.media_type, listing->path);
     }
 
     return 0;
