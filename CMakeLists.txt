@@ -5,6 +5,8 @@ endif()
 
 project(arptool VERSION 1.0.0)
 
+set(ARPTOOL_VERSION_SUFFIX "-dev")
+
 set(CMAKE_DISABLE_IN_SOURCE_BUILD ON)
 if("${CMAKE_SOURCE_DIR}" STREQUAL "${CMAKE_BINARY_DIR}")
   message(SEND_ERROR "In-source builds are not allowed.")
