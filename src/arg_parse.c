@@ -60,7 +60,7 @@ char *parse_args(int argc, char **argv, arp_cmd_args_t *out_args) {
 
                 size_t flag_len = 0;
                 if (eq_pos != NULL) {
-                    flag_len = eq_pos - flag;
+                    flag_len = (uintptr_t) eq_pos - (uintptr_t) flag;
                 } else {
                     flag_len = strlen(flag);
                 }
