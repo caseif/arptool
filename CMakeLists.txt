@@ -3,7 +3,8 @@ if(POLICY CMP0048)
   cmake_policy(SET CMP0048 NEW)
 endif()
 
-project(arptool VERSION 1.0.0)
+project(arptool VERSION 1.0.0
+                LANGUAGES C)
 
 set(ARPTOOL_VERSION_SUFFIX "-dev")
 
@@ -16,7 +17,7 @@ option(FEATURE_DEFLATE "Compile with support for DEFLATE compression" ON)
 
 set(LIBARP_FEATURE_DEFLATE "${FEATURE_DEFLATE}" CACHE BOOL "")
 
-set(CMAKE_CXX_OUTPUT_EXTENSION_REPLACE 1)
+set(CMAKE_C_OUTPUT_EXTENSION_REPLACE 1)
 
 if(NOT CMAKE_BUILD_TYPE)
   set(CMAKE_BUILD_TYPE Release)
