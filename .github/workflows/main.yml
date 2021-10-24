@@ -2,10 +2,8 @@ name: arptool
 on: [push, pull_request]
 
 jobs:
-  build-ubuntu:
-
+  build-ubuntu-gcc:
     runs-on: ubuntu-20.04
-
     steps:
     - uses: actions/checkout@v2
       with:
@@ -13,6 +11,27 @@ jobs:
         submodules: recursive
     - name: Configure
       run: mkdir build && cd build && cmake -DCMAKE_BUILD_TYPE=Debug ..
+      env:
+        CC: gcc
+    - name: Build
+      run: cmake --build build --parallel 8
+    - name: Archive
+      uses: actions/upload-artifact@v1
+      with:
+        name: arptool_dist_linux
+        path: build/arptool
+
+  build-ubuntu-clang:
+    runs-on: ubuntu-20.04
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        token: ${{secrets.ACCESS_TOKEN}}
+        submodules: recursive
+    - name: Configure
+      run: mkdir build && cd build && cmake -DCMAKE_BUILD_TYPE=Debug ..
+      env:
+        CC: clang
     - name: Build
       run: cmake --build build --parallel 8
     - name: Archive
@@ -22,9 +41,7 @@ jobs:
         path: build/arptool
 
   build-windows:
-
     runs-on: windows-2019
-
     steps:
     - uses: actions/checkout@v2
       with:
