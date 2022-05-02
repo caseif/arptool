@@ -25,7 +25,7 @@ int exec_cmd_list(arp_cmd_args_t *args) {
 
     ArpPackage package = NULL;
     int rc = UNINIT_U32;
-    if ((rc = arp_load_from_file(src_path, &package)) != 0) {
+    if ((rc = arp_load_from_file(src_path, NULL, &package)) != 0) {
         printf("Failed to load package (libarp says: %s)\n", arp_get_error());
         return rc;
     }

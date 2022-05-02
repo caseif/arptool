@@ -35,7 +35,7 @@ int exec_cmd_unpack(arp_cmd_args_t *args) {
 
     ArpPackage package = NULL;
     int rc = UNINIT_U32;
-    if ((rc = arp_load_from_file(src_path, &package)) != 0) {
+    if ((rc = arp_load_from_file(src_path, NULL, &package)) != 0) {
         if (malloced_output_path) {
             free(output_path);
         }
