@@ -2,57 +2,73 @@ name: arptool
 on: [push, pull_request]
 
 jobs:
-  build-ubuntu-gcc:
-    runs-on: ubuntu-20.04
-    steps:
-    - uses: actions/checkout@v2
-      with:
-        token: ${{secrets.ACCESS_TOKEN}}
-        submodules: recursive
-    - name: Configure
-      run: mkdir build && cd build && cmake -DCMAKE_BUILD_TYPE=Debug ..
-      env:
-        CC: gcc
-    - name: Build
-      run: cmake --build build --parallel 8
-    - name: Archive
-      uses: actions/upload-artifact@v1
-      with:
-        name: arptool_dist_linux
-        path: build/arptool
+  Build:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-22.04, windows-2022]
+        compiler: [gcc, clang, msvc]
+        configuration: [Release, Debug]
+        exclude:
+          - os: windows-2022
+            compiler: gcc
+          - os: windows-2022
+            compiler: clang
+          - os: ubuntu-22.04
+            compiler: msvc
+    runs-on: ${{ matrix.os }}
 
-  build-ubuntu-clang:
-    runs-on: ubuntu-20.04
     steps:
-    - uses: actions/checkout@v2
-      with:
-        token: ${{secrets.ACCESS_TOKEN}}
-        submodules: recursive
-    - name: Configure
-      run: mkdir build && cd build && cmake -DCMAKE_BUILD_TYPE=Debug ..
-      env:
-        CC: clang
-    - name: Build
-      run: cmake --build build --parallel 8
-    - name: Archive
-      uses: actions/upload-artifact@v1
-      with:
-        name: arptool_dist_linux
-        path: build/arptool
+      - name: Set env vars for current matrix configuration
+        shell: pwsh
+        run: |
+          $os_name = "${{ runner.os }}".ToLower()
+          echo "OS_NAME=$os_name" >> "$env:GITHUB_ENV"
+          
+          $config_name = "${{ matrix.configuration }}".ToLower()
+          echo "CONFIG_NAME=$config_name" >> "$env:GITHUB_ENV"
+          
+          $exe_ext = if ($os_name -eq "windows") { ".exe" } else { "" }
+          echo "EXE_EXT=$exe_ext" >> "$env:GITHUB_ENV"
+          
+          $out_dir = if ($os_name -eq "windows") { "${{ matrix.configuration }}/" } else { "" }
+          echo "OUT_DIR=$out_dir" >> "$env:GITHUB_ENV"
 
-  build-windows:
-    runs-on: windows-2019
-    steps:
-    - uses: actions/checkout@v2
-      with:
-        token: ${{secrets.ACCESS_TOKEN}}
-        submodules: recursive
-    - name: Configure
-      run: mkdir build && cd build && cmake -DCMAKE_SYSTEM_VERSION=10.0.19041.0 -DCMAKE_GENERATOR_PLATFORM=x64 -DCMAKE_BUILD_TYPE=Debug ..
-    - name: Build
-      run: cmake --build build --parallel 8
-    - name: Archive
-      uses: actions/upload-artifact@v1
-      with:
-        name: arptool_dist_windows
-        path: build/Debug/arptool.exe
+      - name: Set env vars for GCC
+        shell: pwsh
+        run: |
+          $suffix = if ("$env:OS_NAME" -eq "macos") { "-12" } else { "" }
+          echo "CC=gcc$suffix" >> "$env:GITHUB_ENV"
+          echo "CXX=g++$suffix" >> "$env:GITHUB_ENV"
+        if: matrix.compiler == 'gcc'
+
+      - name: Set env vars for Clang
+        run: |
+          echo "CC=clang" >> "$GITHUB_ENV"
+          echo "CXX=clang++" >> "$GITHUB_ENV"
+        if: matrix.compiler == 'clang'
+
+      - uses: actions/checkout@v3
+        with:
+          token: ${{secrets.ACCESS_TOKEN}}
+          submodules: recursive
+
+      - name: Configure
+        shell: pwsh
+        run: |
+          mkdir build
+          cd build
+          if ("$env:OS_NAME" -eq "windows") {
+              cmake -DCMAKE_SYSTEM_VERSION=10.0.19041.0 -DCMAKE_GENERATOR_PLATFORM=x64 -DCMAKE_BUILD_TYPE=${{ matrix.configuration }} ..
+          } else {
+              cmake -DCMAKE_BUILD_TYPE=${{ matrix.configuration }} ..
+          }
+
+      - name: Build
+        run: cmake --build build --config ${{ matrix.configuration }} --parallel 2
+
+      - name: Archive
+        uses: actions/upload-artifact@v1
+        with:
+          name: arptool_dist-${{ env.OS_NAME }}-${{ matrix.compiler }}-${{ env.CONFIG_NAME }}
+          path: build/${{ env.OUT_DIR }}arptool${{ env.EXE_EXT }}
