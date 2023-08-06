@@ -212,7 +212,7 @@ char *parse_args(int argc, char **argv, arp_cmd_args_t *out_args) {
     }
 
     if (!out_args->is_help && pos < REQUIRED_POS_ARGS) {
-        return _parse_failed("Missing positional args (expected %u, found %lu)", REQUIRED_POS_ARGS, pos);
+        out_args->is_help = true;
     }
 
     return NULL;
