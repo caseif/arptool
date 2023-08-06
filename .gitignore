@@ -441,3 +441,7 @@ tooling/output/
 *.kdev4
 
 include/config.h
+
+# CLion directories
+.idea/
+cmake-*/
