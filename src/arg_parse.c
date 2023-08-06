@@ -92,16 +92,23 @@ char *parse_args(int argc, char **argv, arp_cmd_args_t *out_args) {
                     continue;
                 }
 
-                if (eq_pos == NULL) {
-                    return _parse_failed("Argument '%s' must have a parameter", arg);
-                }
+                char *param;
+                if (eq_pos != NULL) {
+                    param = eq_pos + 1;
+                    //return _parse_failed("Argument '%s' must have a parameter", arg);
+                } else {
+                    if (i == argc - 1) {
+                        // all other flags require param
+                        return _parse_failed("Expected parameter for flag '%s'", arg);
+                    }
 
-                if (i == argc - 1) {
-                    // all other flags require param
-                    return _parse_failed("Expected parameter for flag '%s'", arg);
-                }
+                    param = argv[i + 1];
+                    i += 1;
 
-                char *param = eq_pos + 1;
+                    if (param[0] == '-') {
+                        return _parse_failed("Expected parameter for flag '%s'", arg);
+                    }
+                }
 
                 if (CMP_LONG_FLAG(flag, flag_len, FLAG_COMPRESSION_LONG)) {
                     out_args->compression = param;
@@ -157,6 +164,10 @@ char *parse_args(int argc, char **argv, arp_cmd_args_t *out_args) {
 
                 char *param = argv[i + 1];
                 i += 1;
+
+                if (param[0] == '-') {
+                    return _parse_failed("Expected parameter for flag '%s'", arg);
+                }
                 
                 if (strcmp(flag, FLAG_COMPRESSION_SHORT) == 0) {
                     out_args->compression = param;
