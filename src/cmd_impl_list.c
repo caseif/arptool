@@ -21,6 +21,9 @@
 
 #define MAX(a, b) (((a) > (b)) ? (a) : (b))
 
+#define HEADER_TYPE "TYPE"
+#define HEADER_PATH "PATH"
+
 int exec_cmd_list(arp_cmd_args_t *args) {
     char *src_path = args->src_path;
 
@@ -38,9 +41,9 @@ int exec_cmd_list(arp_cmd_args_t *args) {
         return rc;
     }
 
-    size_t max_path = strlen("PATH");
+    size_t max_path = strlen(HEADER_PATH);
     size_t max_ext = 0;
-    size_t max_mt = strlen("TYPE");
+    size_t max_mt = strlen(HEADER_TYPE);
     for (size_t i = 0; i < listing_count; i++) {
         arp_resource_listing_t *listing = &res_listings[i];
         max_path = MAX(max_path, strlen(listing->path));
@@ -48,7 +51,7 @@ int exec_cmd_list(arp_cmd_args_t *args) {
         max_mt = MAX(max_mt, strlen(listing->meta.media_type));
     }
 
-    arptool_print(args, LogLevelInfo, "%-*s   PATH\n", (int) max_mt, "TYPE");
+    arptool_print(args, LogLevelInfo, "%-*s   " HEADER_PATH "\n", (int) max_mt, HEADER_TYPE);
 
     if (args->verbosity == VerbosityNormal) {
         for (size_t i = 0; i < max_mt + max_path + 3; i++) {
