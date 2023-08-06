@@ -1,5 +1,7 @@
 #include "util.h"
 
+#include <stdarg.h>
+
 void arptool_print(const arp_cmd_args_t *cmd_args, enum LogLevel level, const char *fmt, ...) {
 
     if (cmd_args->verbosity == VerbositySilent) {
