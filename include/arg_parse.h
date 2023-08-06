@@ -13,8 +13,15 @@
 #include <stddef.h>
 #include <stdint.h>
 
+enum Verbosity {
+    VerbosityNormal,
+    VerbosityQuiet,
+    VerbositySilent
+};
+
 typedef struct ArpCmdArgs {
     bool is_help;
+    enum Verbosity verbosity;
 
     char *verb;
     char *src_path;

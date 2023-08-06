@@ -13,6 +13,7 @@
 #include "help.h"
 
 #include "arp/util/defines.h"
+#include "arp/util/error.h"
 
 #include <errno.h>
 #include <signal.h>

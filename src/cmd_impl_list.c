@@ -10,6 +10,7 @@
 #include "arg_parse.h"
 #include "cmd_impls.h"
 #include "misc_defines.h"
+#include "util.h"
 
 #include "arp/util/error.h"
 #include "arp/unpack/list.h"
@@ -26,14 +27,14 @@ int exec_cmd_list(arp_cmd_args_t *args) {
     ArpPackage package = NULL;
     int rc = UNINIT_U32;
     if ((rc = arp_load_from_file(src_path, NULL, &package)) != 0) {
-        printf("Failed to load package (libarp says: %s)\n", arp_get_error());
+        arptool_print(args, LogLevelError, "Failed to load package (libarp says: %s)\n", arp_get_error());
         return rc;
     }
 
     arp_resource_listing_t *res_listings = NULL;
     size_t listing_count = 0;
     if ((rc = arp_get_resource_listing(package, &res_listings, &listing_count)) != 0) {
-        printf("Failed to list resources in package (libarp says: %s)\n", arp_get_error());
+        arptool_print(args, LogLevelError, "Failed to list resources in package (libarp says: %s)\n", arp_get_error());
         return rc;
     }
 
@@ -47,17 +48,20 @@ int exec_cmd_list(arp_cmd_args_t *args) {
         max_mt = MAX(max_mt, strlen(listing->meta.media_type));
     }
 
-    printf("%-*s   PATH\n", (int) max_mt, "TYPE");
+    arptool_print(args, LogLevelInfo, "%-*s   PATH\n", (int) max_mt, "TYPE");
 
-    for (size_t i = 0; i < max_mt + max_path + 3; i++) {
-        putchar('-');
+    if (args->verbosity == VerbosityNormal) {
+        for (size_t i = 0; i < max_mt + max_path + 3; i++) {
+            putchar('-');
+        }
+
+        putchar('\n');
     }
-    putchar('\n');
 
     for (size_t i = 0; i < listing_count; i++) {
         arp_resource_listing_t *listing = &res_listings[i];
 
-        printf("%-*s   %s\n", (int) max_mt, listing->meta.media_type, listing->path);
+        arptool_print(args, LogLevelInfo, "%-*s   %s\n", (int) max_mt, listing->meta.media_type, listing->path);
     }
 
     return 0;

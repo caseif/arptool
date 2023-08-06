@@ -13,6 +13,7 @@
 #include "compression_defines.h"
 #include "file_defines.h"
 #include "misc_defines.h"
+#include "util.h"
 
 #include "arp/pack/pack.h"
 #include "arp/util/defines.h"
@@ -91,7 +92,7 @@ int exec_cmd_pack(arp_cmd_args_t *args) {
                 free(output_path);
             }
 
-            printf("Unrecognized compression type\n");
+            arptool_print(args, LogLevelError, "Unrecognized compression type\n");
             return EINVAL;
         }
     }
@@ -105,10 +106,10 @@ int exec_cmd_pack(arp_cmd_args_t *args) {
 
     int rc = UNINIT_U32;
     if ((rc = arp_pack_from_fs(src_path, output_path, opts, NULL)) == 0) {
-        printf("Successfully wrote archive to %s\n", output_path);
+        arptool_print(args, LogLevelInfo, "Successfully wrote archive to %s\n", output_path);
     } else {
-        printf("Packing failed\n");
-        printf("libarp says: %s (rc: %d)\n", arp_get_error(), rc);
+        arptool_print(args, LogLevelError, "Packing failed\n");
+        arptool_print(args, LogLevelError, "libarp says: %s (rc: %d)\n", arp_get_error(), rc);
     }
 
     arp_free_packing_options(opts);

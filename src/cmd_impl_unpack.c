@@ -12,6 +12,7 @@
 #include "cmd_impls.h"
 #include "file_defines.h"
 #include "misc_defines.h"
+#include "util.h"
 
 #include "arp/unpack/load.h"
 #include "arp/unpack/resource.h"
@@ -40,11 +41,11 @@ int exec_cmd_unpack(arp_cmd_args_t *args) {
             free(output_path);
         }
 
-        printf("Failed to load package (rc: %d) (libarp says: %s)\n", rc, arp_get_error());
+        arptool_print(args, LogLevelError, "Failed to load package (rc: %d) (libarp says: %s)\n", rc, arp_get_error());
         return rc;
     }
 
-    printf("Successfully loaded package\n");
+    arptool_print(args, LogLevelInfo, "Successfully loaded package\n");
 
     if (args->resource_path != NULL) {
         arp_resource_meta_t meta;
@@ -55,25 +56,27 @@ int exec_cmd_unpack(arp_cmd_args_t *args) {
                 free(output_path);
             }
 
-            printf("Failed to get resource meta (libarp says: %s)\n", arp_get_error());
+            arptool_print(args, LogLevelError, "Failed to get resource meta (libarp says: %s)\n", arp_get_error());
             return rc;
         }
 
         rc = arp_unpack_resource_to_fs(&meta, output_path);
 
         if (rc == 0) {
-            printf("Successfully unpacked %s to disk\n", args->resource_path);
+            arptool_print(args, LogLevelInfo, "Successfully unpacked %s to disk\n", args->resource_path);
         } else {
-            printf("Failed to unpack resource to disk (libarp says: %s)\n", arp_get_error());
+            arptool_print(args, LogLevelError, "Failed to unpack resource to disk (libarp says: %s)\n",
+                    arp_get_error());
         }
 
 
         rc = 0;
     } else {
         if ((rc = arp_unpack_to_fs(package, output_path)) == 0) {
-            printf("Successfully unpacked package to disk!\n");
+            arptool_print(args, LogLevelInfo, "Successfully unpacked package to disk!\n");
         } else {
-            printf("Failed to unpack package to disk (rc: %d) (libarp says: %s)\n", rc, arp_get_error());
+            arptool_print(args, LogLevelError, "Failed to unpack package to disk (rc: %d) (libarp says: %s)\n",
+                    rc, arp_get_error());
         }
     }
 

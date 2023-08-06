@@ -42,6 +42,7 @@ char *parse_args(int argc, char **argv, arp_cmd_args_t *out_args) {
     bool stopped_args = false;
 
     out_args->is_help = false;
+    out_args->verbosity = VerbosityNormal;
 
     for (int i = 1; i < argc; i++) {
         char *arg = argv[i];
@@ -67,6 +68,20 @@ char *parse_args(int argc, char **argv, arp_cmd_args_t *out_args) {
 
                 if (CMP_LONG_FLAG(flag, flag_len, FLAG_HELP_LONG)) {
                     out_args->is_help = true;
+                    continue;
+                } else if (CMP_LONG_FLAG(flag, flag_len, FLAG_QUIET_LONG)) {
+                    if (out_args->verbosity != VerbosityNormal) {
+                        return _parse_failed("--quiet cannot be specified together with --silent");
+                    }
+
+                    out_args->verbosity = VerbosityQuiet;
+                    continue;
+                } else if (CMP_LONG_FLAG(flag, flag_len, FLAG_SILENT_LONG)) {
+                    if (out_args->verbosity != VerbosityNormal) {
+                        return _parse_failed("--silent cannot be specified together with --quiet");
+                    }
+
+                    out_args->verbosity = VerbositySilent;
                     continue;
                 } else if (CMP_LONG_FLAG(flag, flag_len, NFLAG_DEFLATE)) {
                     if (eq_pos != NULL) {
@@ -119,10 +134,24 @@ char *parse_args(int argc, char **argv, arp_cmd_args_t *out_args) {
                 if (strcmp(flag, FLAG_HELP_SHORT) == 0 || strcmp(flag, FLAG_HELP_SHORT_ALT) == 0) {
                     out_args->is_help = true;
                     continue;
+                } else if (strcmp(flag, FLAG_QUIET_SHORT) == 0) {
+                    if (out_args->verbosity != VerbosityNormal) {
+                        return _parse_failed("--quiet cannot be specified together with --silent");
+                    }
+
+                    out_args->verbosity = VerbosityQuiet;
+                    continue;
+                } else if (strcmp(flag, FLAG_SILENT_SHORT) == 0) {
+                    if (out_args->verbosity != VerbosityNormal) {
+                        return _parse_failed("--silent cannot be specified together with --quiet");
+                    }
+
+                    out_args->verbosity = VerbositySilent;
+                    continue;
                 }
 
                 if (i == argc - 1) {
-                    // all short flags require param
+                    // all other short flags require param
                     return _parse_failed("Expected parameter for flag '%s'", arg);
                 }
 
@@ -174,9 +203,17 @@ char *parse_args(int argc, char **argv, arp_cmd_args_t *out_args) {
         pos += 1;
     }
 
+    if (out_args->is_help) {
+        if (out_args->verbosity == VerbosityQuiet) {
+            return _parse_failed("--quiet does not make sense with --help");
+        } else if (out_args->verbosity == VerbositySilent) {
+            return _parse_failed("--silent does not make sense with --help");
+        }
+    }
+
     if (!out_args->is_help && pos < REQUIRED_POS_ARGS) {
         return _parse_failed("Missing positional args (expected %u, found %lu)", REQUIRED_POS_ARGS, pos);
     }
-    
+
     return NULL;
 }
