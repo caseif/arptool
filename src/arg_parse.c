@@ -136,61 +136,65 @@ char *parse_args(int argc, char **argv, arp_cmd_args_t *out_args) {
 
                 continue;
             } else if (arg[0] == '-') {
-                char *flag = arg + 1;
+                size_t last_flag_pos = strlen(arg) - 1;
+                for (size_t j = 1; j <= last_flag_pos; j++) {
+                    char flag = arg[j];
 
-                if (strcmp(flag, FLAG_HELP_SHORT) == 0 || strcmp(flag, FLAG_HELP_SHORT_ALT) == 0) {
-                    out_args->is_help = true;
-                    continue;
-                } else if (strcmp(flag, FLAG_QUIET_SHORT) == 0) {
-                    if (out_args->verbosity != VerbosityNormal) {
-                        return _parse_failed("--quiet cannot be specified together with --silent");
+                    if (flag == FLAG_HELP_SHORT || flag == FLAG_HELP_SHORT_ALT) {
+                        out_args->is_help = true;
+                        continue;
+                    } else if (flag == FLAG_QUIET_SHORT) {
+                        if (out_args->verbosity != VerbosityNormal) {
+                            return _parse_failed("--quiet cannot be specified together with --silent");
+                        }
+
+                        out_args->verbosity = VerbosityQuiet;
+                        continue;
+                    } else if (flag == FLAG_SILENT_SHORT) {
+                        if (out_args->verbosity != VerbosityNormal) {
+                            return _parse_failed("--silent cannot be specified together with --quiet");
+                        }
+
+                        out_args->verbosity = VerbositySilent;
+                        continue;
                     }
 
-                    out_args->verbosity = VerbosityQuiet;
-                    continue;
-                } else if (strcmp(flag, FLAG_SILENT_SHORT) == 0) {
-                    if (out_args->verbosity != VerbosityNormal) {
-                        return _parse_failed("--silent cannot be specified together with --quiet");
+                    if (i == argc - 1 || j < last_flag_pos) {
+                        // all other short flags require param
+                        return _parse_failed("Expected parameter for flag '-%c'", flag);
                     }
 
-                    out_args->verbosity = VerbositySilent;
-                    continue;
-                }
+                    char *param = argv[i + 1];
+                    i += 1;
 
-                if (i == argc - 1) {
-                    // all other short flags require param
-                    return _parse_failed("Expected parameter for flag '%s'", arg);
-                }
-
-                char *param = argv[i + 1];
-                i += 1;
-
-                if (param[0] == '-') {
-                    return _parse_failed("Expected parameter for flag '%s'", arg);
-                }
-                
-                if (strcmp(flag, FLAG_COMPRESSION_SHORT) == 0) {
-                    out_args->compression = param;
-                } else if (strcmp(flag, FLAG_NAME_SHORT) == 0) {
-                    out_args->package_name = param;
-                } else if (strcmp(flag, FLAG_MAPPINGS_SHORT) == 0) {
-                    out_args->mappings_path = param;
-                } else if (strcmp(flag, FLAG_NAMESPACE_SHORT) == 0) {
-                    out_args->package_namespace = param;
-                } else if (strcmp(flag, FLAG_OUTPUT_SHORT) == 0) {
-                    out_args->output_path = param;
-                } else if (strcmp(flag, FLAG_PART_SIZE_SHORT) == 0) {
-                    uint64_t param_l = strtoull(param, NULL, BASE_10);
-
-                    if (errno != 0) {
-                        return _parse_failed("Invalid param '%s' for flag '%s'", param, arg);
+                    if (param[0] == '-') {
+                        return _parse_failed("Expected parameter for flag '%s'", arg);
                     }
 
-                    out_args->part_size = param_l;
-                } else if (strcmp(flag, FLAG_RESOURCE_PATH_SHORT) == 0) {
-                    out_args->resource_path = param;
-                } else {
-                    return _parse_failed("Unrecognized flag '%s'", arg);
+                    if (flag == FLAG_COMPRESSION_SHORT) {
+                        out_args->compression = param;
+                    } else if (flag == FLAG_NAME_SHORT) {
+                        out_args->package_name = param;
+                    } else if (flag == FLAG_MAPPINGS_SHORT) {
+                        out_args->mappings_path = param;
+                    } else if (flag == FLAG_NAMESPACE_SHORT) {
+                        out_args->package_namespace = param;
+                    } else if (flag == FLAG_OUTPUT_SHORT) {
+                        out_args->output_path = param;
+                    } else if (flag == FLAG_PART_SIZE_SHORT) {
+                        uint64_t param_l = strtoull(param, NULL, BASE_10);
+
+                        if (errno != 0) {
+                            return _parse_failed("Invalid param '%s' for flag '%s'", param, arg);
+                        }
+
+                        out_args->part_size = param_l;
+                    } else if (flag == FLAG_RESOURCE_PATH_SHORT) {
+                        out_args->resource_path = param;
+                    } else {
+                        return _parse_failed("Unrecognized flag '%s'", arg);
+                    }
+
                 }
 
                 continue;

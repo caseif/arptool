@@ -9,26 +9,26 @@
 
 #pragma once
 
-#define FLAG_HELP_SHORT "?"
-#define FLAG_HELP_SHORT_ALT "h"
+#define FLAG_HELP_SHORT '?'
+#define FLAG_HELP_SHORT_ALT 'h'
 #define FLAG_HELP_LONG "help"
-#define FLAG_QUIET_SHORT "q"
+#define FLAG_QUIET_SHORT 'q'
 #define FLAG_QUIET_LONG "quiet"
-#define FLAG_SILENT_SHORT "s"
+#define FLAG_SILENT_SHORT 's'
 #define FLAG_SILENT_LONG "silent"
-#define FLAG_COMPRESSION_SHORT "c"
+#define FLAG_COMPRESSION_SHORT 'c'
 #define FLAG_COMPRESSION_LONG "compression"
-#define FLAG_NAME_SHORT "f"
+#define FLAG_NAME_SHORT 'f'
 #define FLAG_NAME_LONG "name"
-#define FLAG_MAPPINGS_SHORT "m"
+#define FLAG_MAPPINGS_SHORT 'm'
 #define FLAG_MAPPINGS_LONG "mappings"
-#define FLAG_NAMESPACE_SHORT "n"
+#define FLAG_NAMESPACE_SHORT 'n'
 #define FLAG_NAMESPACE_LONG "namespace"
-#define FLAG_OUTPUT_SHORT "o"
+#define FLAG_OUTPUT_SHORT 'o'
 #define FLAG_OUTPUT_LONG "output"
-#define FLAG_PART_SIZE_SHORT "p"
+#define FLAG_PART_SIZE_SHORT 'p'
 #define FLAG_PART_SIZE_LONG "part-size"
-#define FLAG_RESOURCE_PATH_SHORT "r"
+#define FLAG_RESOURCE_PATH_SHORT 'r'
 #define FLAG_RESOURCE_PATH_LONG "resource"
 
 #define NFLAG_DEFLATE "deflate"
