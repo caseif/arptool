@@ -18,7 +18,16 @@ if("${CMAKE_SOURCE_DIR}" STREQUAL "${CMAKE_BINARY_DIR}")
   message(SEND_ERROR "In-source builds are not allowed.")
 endif()
 
+if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
+  set(DEF_USE_SYSTEM_ZLIB OFF)
+else()
+  set(DEF_USE_SYSTEM_ZLIB ON)
+endif()
+
+# this gets passed straight through to libarp
 option(FEATURE_DEFLATE "Compile with support for DEFLATE compression" ON)
+
+option(USE_SYSTEM_ZLIB "Use system-provided zlib library and headers" "${DEF_USE_SYSTEM_ZLIB}")
 
 set(LIBARP_FEATURE_DEFLATE "${FEATURE_DEFLATE}" CACHE BOOL "")
 
